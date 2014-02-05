@@ -1,0 +1,13 @@
+div.datetime {
+    display: inline-block;
+}
+
+div.date {
+    width: 45%;
+    max-width: 270px;
+}
+
+div.time {
+    width: 25%;
+    max-width: 145px;
+}
