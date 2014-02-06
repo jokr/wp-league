@@ -22,6 +22,7 @@ class Tournaments extends Repository
 	public function get_by_id( $id ) {
 		$tournament = parent::_get_by_id( $id );
 		$tournament['matches'] = $this->matches->get_all_by_tournament( $id );
+		$tournament['standings'] = unserialize( $tournament['standings'] );
 		return new Tournament($tournament);
 	}
 
@@ -44,7 +45,7 @@ class Tournaments extends Repository
 			format VARCHAR(32) NOT NULL DEFAULT 'OPEN',
 			status VARCHAR(32) NOT NULL,
 			url VARCHAR(255),
-			standings TINYTEXT,
+			standings MEDIUMTEXT,
 			xml VARCHAR(255),
 			PRIMARY KEY id (id),
 			INDEX league_ind (league_id),
@@ -62,6 +63,7 @@ class Tournaments extends Repository
 		$result = array();
 		foreach ( $tournaments as $id => $tournament ) {
 			$tournament['matches'] = $this->matches->get_all_by_tournament( $id );
+			$tournament['standings'] = unserialize( $tournament['standings'] );
 			$result[$id] = new Tournament($tournament);
 		}
 		return $result;

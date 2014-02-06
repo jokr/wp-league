@@ -8,9 +8,10 @@ class Match_List_Table extends List_Table
 	private $players;
 	private $playerCache;
 
-	public function __construct( array $matches, Players $players ) {
+	public function __construct( array $matches ) {
+		global $league_plugin;
 		$this->matches = $matches;
-		$this->players = $players;
+		$this->players = $league_plugin->get_players();
 		$this->playerCache = array();
 	}
 

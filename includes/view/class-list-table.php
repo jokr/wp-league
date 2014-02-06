@@ -3,6 +3,7 @@
 abstract class List_Table
 {
 	protected $items;
+	private $index;
 
 	public function prepare_items() {
 		$this->items = $this->get_items();
@@ -134,6 +135,7 @@ abstract class List_Table
 	}
 
 	private function display_rows() {
+		$this->index = 0;
 		if ( $this->has_grouping() ) {
 			$this->sort();
 
@@ -160,11 +162,13 @@ abstract class List_Table
 		} else {
 			foreach ( $this->items as $item ) {
 				$this->single_row( $item );
+				$this->index++;
 			}
 		}
+		$this->index = null;
 	}
 
-	private function single_row( Model $item ) {
+	private function single_row( $item ) {
 		static $row_class = '';
 		$row_class = ($row_class == '' ? ' class="alternate"' : '');
 
@@ -173,7 +177,7 @@ abstract class List_Table
 		echo '</tr>';
 	}
 
-	private function single_row_columns( Model $item ) {
+	private function single_row_columns( $item ) {
 		list($columns, $hidden) = $this->get_column_info();
 
 		foreach ( $columns as $column_name => $column_display_name ) {
@@ -189,17 +193,19 @@ abstract class List_Table
 		}
 	}
 
-	private function single_row_column_value( $column_name, Model $item ) {
+	private function single_row_column_value( $column_name, $item ) {
 		if ( method_exists( $this, 'column_' . $column_name ) ) {
 			return call_user_func( array($this, 'column_' . $column_name), $item );
 		} elseif ( method_exists( $item, 'get' . ucfirst( $column_name ) ) ) {
 			return call_user_func( array($item, 'get' . ucfirst( $column_name )), $item );
+		} elseif ( is_array($item) && array_key_exists($column_name, $item) ) {
+			return $item[$column_name];
 		} else {
 			return '';
 		}
 	}
 
-	private function is_same_group( Model $item, Model $prev ) {
+	private function is_same_group( $item, $prev ) {
 		$grouping = $this->get_grouped_columns();
 		foreach ( $grouping as $column ) {
 			if ( $this->single_row_column_value( $column, $item ) != $this->single_row_column_value( $column, $prev ) ) {
@@ -216,11 +222,15 @@ abstract class List_Table
 		);
 	}
 
-	protected function get_group_header_value( Model $item ) {
+	protected function get_group_header_value( $item ) {
 		$result = '';
 		foreach ( $this->get_grouped_columns() as $grouping ) {
 			$result .= $this->single_row_column_value($grouping, $item) . ' ';
 		}
 		return $result;
+	}
+
+	protected function get_index() {
+		return $this->index;
 	}
 }

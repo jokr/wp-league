@@ -74,5 +74,10 @@ class Matches extends Repository
 		AND round = $round AND (player_id = $player_id OR opponent_id = $$player_id)" );
 		return ! empty($result);
 	}
+
+	public function delete_all_by_tournament( $tournamentId ) {
+		global $wpdb;
+		return $wpdb->delete( $this->table, array('tournament_id' => $tournamentId) );
+	}
 }
  

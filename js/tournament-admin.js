@@ -4,6 +4,7 @@
     var tournamentTimeElement = $('#tournament-time')
     var leagueElement = $('#tournament-league');
     var leagues = [];
+    var dialog = $('#delete-results');
 
     tournamentDateElement.datepicker({
         defaultDate: "+1w",
@@ -47,4 +48,15 @@
 
     tournamentDateElement.change(updateHiddenField);
     tournamentTimeElement.change(updateHiddenField);
+
+
+    dialog.click(function () {
+        $('dialog').show();
+        $('#wpwrap').before('<div id="dim"></div>');
+    });
+
+    $('#delete-cancel').click(function () {
+        $('dialog').hide();
+        $('#dim').remove();
+    });
 })(jQuery);

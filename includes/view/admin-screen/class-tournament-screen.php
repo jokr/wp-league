@@ -18,6 +18,7 @@ class Tournament_Screen extends Admin_Screen
 		add_action( 'admin_post_add_tournament', array($this, 'add_tournament') );
 		add_action( 'admin_post_edit_tournament', array($this, 'edit_tournament') );
 		add_action( 'admin_post_upload_results', array($this, 'upload_results') );
+		add_action( 'admin_post_delete_results', array($this, 'delete_results') );
 		add_filter( 'upload_mimes', array($this, 'add_custom_upload_mimes') );
 	}
 
@@ -106,14 +107,43 @@ class Tournament_Screen extends Admin_Screen
 		) {
 			$tournament = $this->tournaments->get_by_id( $_POST['id'] );
 			if ( $currentFile = $tournament->getXml() ) {
-				unlink($currentFile);
+				unlink( $currentFile );
 			}
 			$resultFile = $_FILES['results-file'];
 			$file = wp_handle_upload( $resultFile, array('test_form' => false) );
 			$xml = simplexml_load_file( $file['file'] );
 			$importer = new WER_Result_Handler($file['file'], $xml, $tournament);
 			$results = $importer->save_results( $this->players, $this->matches );
-			wp_redirect( add_query_arg( 'updated', 'true', admin_url( 'admin.php?page=tournaments' ) ) );
+
+			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(
+					'page' => 'tournaments',
+					'updated' => 'true',
+					'action' => 'edit',
+					'id' => $tournament->getId()
+				) )
+			) );
+		} else {
+			wp_redirect( add_query_arg( 'updated', 'false', admin_url( 'admin.php?page=tournaments' ) ) );
+		}
+	}
+
+	public function delete_results() {
+		check_admin_referer( 'delete-results', '_wpnonce_delete_results' );
+		if ( isset($_POST['id']) && is_numeric( $_POST['id'] ) && $this->tournaments->exists( $_POST['id'] ) ) {
+			$tournament = $this->tournaments->get_by_id( $_POST['id'] );
+			if ( $currentFile = $tournament->getXml() ) {
+				unlink( $currentFile );
+			}
+			$tournament->delete_results();
+			$tournament->save();
+			$this->matches->delete_all_by_tournament( $tournament->getId() );
+			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(
+					'page' => 'tournaments',
+					'updated' => 'true',
+					'action' => 'edit',
+					'id' => $tournament->getId()
+				) )
+			) );
 		} else {
 			wp_redirect( add_query_arg( 'updated', 'false', admin_url( 'admin.php?page=tournaments' ) ) );
 		}
