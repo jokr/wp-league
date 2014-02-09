@@ -3,7 +3,6 @@
 abstract class Model
 {
 	protected $id;
-	protected $created;
 
 	public function __construct( array $properties ) {
 		foreach ( $properties as $key => $value ) {
@@ -25,31 +24,11 @@ abstract class Model
 
 	public abstract function save();
 
-	/**
-	 * @param mixed $id
-	 */
-	public function setId( $id ) {
+	public function set_id( $id ) {
 		$this->id = $id;
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function getId() {
+	public function get_id() {
 		return $this->id;
-	}
-
-	/**
-	 * @param mixed $created
-	 */
-	protected function setCreated( $created ) {
-		$this->created = $created;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getCreated() {
-		return $this->created;
 	}
 }

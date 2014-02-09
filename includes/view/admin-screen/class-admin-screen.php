@@ -17,7 +17,7 @@ abstract class Admin_Screen
 	public abstract function add_admin_menu();
 
 	protected function current_action() {
-		if (isset( $_REQUEST['action'] ) && - 1 != $_REQUEST['action'])
+		if ( isset($_REQUEST['action']) && - 1 != $_REQUEST['action'] )
 			return $_REQUEST['action'];
 		return false;
 	}
@@ -42,6 +42,14 @@ abstract class Admin_Screen
 			'tournament-admin',
 			LEAGUE_PLUGIN_URL . 'js/tournament-admin.js',
 			array('jquery-ui-datepicker', 'jquery-ui-timepicker'),
+			LEAGUE_PLUGIN_VERSION,
+			true
+		);
+
+		wp_register_script(
+			'prize-control',
+			LEAGUE_PLUGIN_URL . 'js/prize-control.js',
+			array('jquery'),
 			LEAGUE_PLUGIN_VERSION,
 			true
 		);
@@ -75,7 +83,7 @@ abstract class Admin_Screen
 		);
 	}
 
-	protected function ajax_callbacks(){
+	protected function ajax_callbacks() {
 		return;
 	}
 }

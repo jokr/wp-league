@@ -117,11 +117,13 @@ abstract class List_Table
 	}
 
 	private function display_tablenav( $which ) {
-		?>
-		<div class="tablenav <?php echo esc_attr( $which ); ?>">
-			<br class="clear"/>
-		</div>
-	<?php
+		printf( '<div class="tablenav %s">', esc_attr( $which ) );
+		if ( method_exists( $this, 'display_' . $which . '_tablenav' ) ) {
+			call_user_func( array($this, 'display_' . $which . '_tablenav') );
+		} else {
+			printf( '<br class="clear"/>' );
+		}
+		printf( '</div>' );
 	}
 
 	private function display_rows_or_placeholder() {
@@ -162,7 +164,7 @@ abstract class List_Table
 		} else {
 			foreach ( $this->items as $item ) {
 				$this->single_row( $item );
-				$this->index++;
+				$this->index ++;
 			}
 		}
 		$this->index = null;
@@ -198,7 +200,7 @@ abstract class List_Table
 			return call_user_func( array($this, 'column_' . $column_name), $item );
 		} elseif ( method_exists( $item, 'get' . ucfirst( $column_name ) ) ) {
 			return call_user_func( array($item, 'get' . ucfirst( $column_name )), $item );
-		} elseif ( is_array($item) && array_key_exists($column_name, $item) ) {
+		} elseif ( is_array( $item ) && array_key_exists( $column_name, $item ) ) {
 			return $item[$column_name];
 		} else {
 			return '';
@@ -225,7 +227,7 @@ abstract class List_Table
 	protected function get_group_header_value( $item ) {
 		$result = '';
 		foreach ( $this->get_grouped_columns() as $grouping ) {
-			$result .= $this->single_row_column_value($grouping, $item) . ' ';
+			$result .= $this->single_row_column_value( $grouping, $item ) . ' ';
 		}
 		return $result;
 	}

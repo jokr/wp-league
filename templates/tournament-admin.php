@@ -44,7 +44,7 @@ $leagues = $league_plugin->get_leagues()->get_all_active();
                             <select name="tournament[league_id]" id="tournament-league" required="required">
                                 <?php foreach ($leagues as $league) : ?>
                                     <option
-                                        value="<?php echo $league->getId(); ?>"><?php echo $league->getName(); ?></option>
+                                        value="<?php echo $league->get_id(); ?>"><?php echo $league->getName(); ?></option>
                                 <?php endforeach; ?>
                             </select>
 

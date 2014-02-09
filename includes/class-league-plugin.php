@@ -4,8 +4,10 @@ require_once dirname( __FILE__ ) . '/domain/persistence/class-leagues.php';
 require_once dirname( __FILE__ ) . '/domain/persistence/class-tournaments.php';
 require_once dirname( __FILE__ ) . '/domain/persistence/class-players.php';
 require_once dirname( __FILE__ ) . '/domain/persistence/class-matches.php';
+include_once dirname( __FILE__ ) . '/domain/persistence/class-league-events.php';
 require_once dirname( __FILE__ ) . '/view/class-league-shortcode.php';
 require_once dirname( __FILE__ ) . '/view/admin-screen/class-league-screen.php';
+
 include_once dirname( __FILE__ ) . '/class-wer-result-handler.php';
 
 class League_Plugin
@@ -14,12 +16,14 @@ class League_Plugin
     private $tournaments;
     private $players;
     private $matches;
+	private $events;
 
     public function __construct() {
         $this->matches = new Matches();
         $this->tournaments = new Tournaments($this->matches);
         $this->leagues = new Leagues($this->tournaments);
         $this->players = new Players();
+        $this->events = new League_Events();
 
 	    new League_Screen($this);
 
@@ -36,6 +40,7 @@ class League_Plugin
 	    $this->tournaments->create_table();
         $this->players->create_table();
 	    $this->matches->create_table();
+	    $this->events->create_table();
     }
 
     public function get_setting( $handle ) {
@@ -68,4 +73,8 @@ class League_Plugin
     public function get_matches() {
         return $this->matches;
     }
+
+	public function get_events() {
+		return $this->events;
+	}
 }

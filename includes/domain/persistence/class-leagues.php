@@ -15,7 +15,7 @@ class Leagues extends Repository
 
 		$this->table = $wpdb->prefix . 'leagues';
 		$wpdb->leagues = $this->table;
-		$this->columns = 'id, name, start, end';
+		$this->columns = 'id, name, start, end, standings';
 		$this->sort = 'start';
 	}
 
@@ -42,7 +42,7 @@ class Leagues extends Repository
 			name VARCHAR(32) NOT NULL,
 			start DATE NOT NULL,
 			end DATE NOT NULL,
-			options VARCHAR(255) NOT NULL,
+			standings MEDIUMTEXT NOT NULL,
 			PRIMARY KEY id (id)
 		)
 		DEFAULT COLLATE utf8_general_ci;";

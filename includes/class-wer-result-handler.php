@@ -50,18 +50,18 @@ class WER_Result_Handler
 			$round_nr = (int) $round->attributes()->number;
 			foreach ( $round->xpath( 'match' ) as $matchXML ) {
 				$match = array(
-					'tournament_id' => $this->tournament->getId(),
+					'tournament_id' => $this->tournament->get_id(),
 					'round' => $round_nr,
 					'date' => $date,
 					'player_dci' => (string) $matchXML->attributes()->person,
 					'outcome' => (int) $matchXML->attributes()->outcome
 				);
-				// As long as match is not a bye, record opponent and match details.
-				if ( $match['outcome'] != 3 ) {
+				// As long as match is not a bye or a match loss, record opponent and match details.
+				if ( ! in_array( $match['outcome'], array(3, 5) ) ) {
 					$match['opponent_dci'] = (string) $matchXML->attributes()->opponent;
 					$match['wins'] = (int) $matchXML->attributes()->win;
 					$match['losses'] = (int) $matchXML->attributes()->loss;
-					$match['draws'] = (int) $matchXML->attributes()->draws;
+					$match['draws'] = (int) $matchXML->attributes()->draw;
 				}
 
 				array_push( $this->matches, $match );
@@ -84,9 +84,9 @@ class WER_Result_Handler
 			if ( ! $player = $players->find_by_dci( $standing['dci'] ) ) {
 				$player = new Player($standing);
 				$player->save();
-				$standing['id'] = $player->getId();
+				$standing['id'] = $player->get_id();
 			}
-			$standing['id'] = $player->getId();
+			$standing['id'] = $player->get_id();
 		}
 	}
 
@@ -96,7 +96,7 @@ class WER_Result_Handler
 			if ( isset($player) ) {
 				$match['player_id'] = $player['id'];
 				unset($match['player_dci']);
-				if ( $match['outcome'] != 3 ) {
+				if ( ! in_array($match['outcome'], array(3, 5) ) ) {
 					$opponent = $this->standings[$match['opponent_dci']];
 					if ( isset($opponent) ) {
 						$match['opponent_id'] = $opponent['id'];
@@ -108,7 +108,7 @@ class WER_Result_Handler
 			if ( ! $matches->exists_in_tournament( $match['tournament_id'], $match['round'], $match['player_id'] ) ) {
 				$m = new Match($match);
 				$m->save();
-				$match['id'] = $m->getId();
+				$match['id'] = $m->get_id();
 			}
 		}
 	}
@@ -135,27 +135,5 @@ class WER_Result_Handler
 			);
 		}
 		return $result;
-	}
-
-	private function award_credits() {
-		$prize_pool = count( $this->standings ) * 10 * 0.85;
-
-		uasort( $this->standings, function ( $a, $b ) {
-			return $a['rank'] - $b['rank'];
-		} );
-
-		$players = array_slice( $this->standings, 0, floor( count( $this->standings ) / 2 ) - 1, true );
-
-		$total_match_points = 0;
-		foreach ( $players as $player ) {
-			$total_match_points += $player['points'];
-		}
-
-		$total_match_points += count( $players ) * (count( $players ) - 1);
-
-		foreach ( $players as $id => $player ) {
-			$rank_points = 2 * (count( $players ) - $player['rank']);
-			$credits = floor( (($player['points'] + $rank_points) / $total_match_points * $prize_pool) );
-		}
 	}
 }

@@ -37,7 +37,7 @@ $disabled = in_array( $tournament->getStatus(), array('FINISHED', 'CLOSED') );
 	      id="edit-tournament" method="post"
 	      action="<?php echo admin_url( 'admin-post.php' ) ?>" class="validate">
 		<input type="hidden" name="action" value="edit_tournament"/>
-		<input type="hidden" name="id" value="<?php echo esc_attr( $tournament->getId() ); ?>"/>
+		<input type="hidden" name="id" value="<?php echo esc_attr( $tournament->get_id() ); ?>"/>
 		<input type="hidden" name="item" value="tournament"/>
 		<?php wp_nonce_field( 'edit-tournament', '_wpnonce_edit_tournament' ); ?>
 		<table class="form-table">
@@ -47,8 +47,8 @@ $disabled = in_array( $tournament->getStatus(), array('FINISHED', 'CLOSED') );
 				            required="required" <?php disabled( $disabled ) ?>>
 						<?php foreach ( $leagues as $league ) : ?>
 							<option
-								value="<?php echo $league->getId(); ?>"
-								<?php selected( $league->getId(), $tournament->getLeagueId() ) ?>>
+								value="<?php echo $league->get_id(); ?>"
+								<?php selected( $league->get_id(), $tournament->getLeagueId() ) ?>>
 								<?php echo $league->getName(); ?></option>
 						<?php endforeach; ?>
 					</select>

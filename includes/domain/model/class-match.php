@@ -144,4 +144,8 @@ class Match extends Model
 	public function getWins() {
 		return $this->wins;
 	}
+
+	public function has_opponent() {
+		return isset($this->opponent_id);
+	}
 }

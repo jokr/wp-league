@@ -22,7 +22,6 @@ class Player extends Model
 	public function award_credits( $credits ) {
 		if ( is_numeric( $credits ) ) {
 			$this->credits += $credits;
-			$this->save();
 		}
 	}
 
@@ -64,5 +63,9 @@ class Player extends Model
 
 	public function getWpUserId() {
 		return $this->wp_user_id;
+	}
+
+	public function get_full_name() {
+		return $this->first . ' ' . $this->last;
 	}
 }

@@ -13,13 +13,14 @@ abstract class Repository
 
 	public function save( Model $element ) {
 		global $wpdb;
-		if ( null === $element->getId() ) {
+
+		if ( null === $element->get_id() ) {
 			$wpdb->insert( $this->table, $element->get_vars() );
-			$element->setId($wpdb->insert_id);
+			$element->set_id( $wpdb->insert_id );
 		} else {
-			$wpdb->update( $this->table, $element->get_vars(), array('id' => $element->getId()) );
+			$wpdb->update( $this->table, $element->get_vars(), array('id' => $element->get_id()) );
 		}
-		return $element->getId();
+		return $element->get_id();
 	}
 
 	protected function _get_by_id( $id ) {

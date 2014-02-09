@@ -98,10 +98,39 @@ class Tournament extends Model
 		return $this->xml;
 	}
 
+	public function get_league() {
+		global $league_plugin;
+		return $league_plugin->get_leagues()->get_by_id( $this->getLeagueId() );
+	}
+
 	public function delete_results() {
 		$this->xml = NULL;
 		$this->standings = NULL;
 		$this->matches = NULL;
 		$this->status = 'WAITING';
+	}
+
+	public function set_winner( $winner_id ) {
+		if ( $this->get_winner() != $winner_id ) {
+			$rank = $this->find_in_standings( $winner_id );
+			if ( isset($rank) ) {
+				$tmp = $this->standings[$rank];
+				$this->standings[$rank] = $this->standings[1];
+				$this->standings[1] = $tmp;
+			}
+		}
+	}
+
+	private function find_in_standings( $id ) {
+		foreach ( $this->standings as $rank => $standing ) {
+			if ( $standing['player'] == $id ) {
+				return $rank;
+			}
+		}
+		return null;
+	}
+
+	public function get_winner() {
+		return $this->standings[1]['player'];
 	}
 }

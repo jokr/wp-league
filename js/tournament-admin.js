@@ -1,7 +1,7 @@
 (function ($) {
 
-    var tournamentDateElement = $('#tournament-date')
-    var tournamentTimeElement = $('#tournament-time')
+    var tournamentDateElement = $('#tournament-date');
+    var tournamentTimeElement = $('#tournament-time');
     var leagueElement = $('#tournament-league');
     var leagues = [];
     var dialog = $('#delete-results');
@@ -48,7 +48,6 @@
 
     tournamentDateElement.change(updateHiddenField);
     tournamentTimeElement.change(updateHiddenField);
-
 
     dialog.click(function () {
         $('dialog').show();
