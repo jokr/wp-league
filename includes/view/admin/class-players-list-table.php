@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname( __FILE__ ) . '/class-list-table.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/view/class-list-table.php';
 
 class Players_List_Table extends List_Table
 {

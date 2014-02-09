@@ -6,7 +6,7 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 	wp_die( 'You do not have sufficient permissions to access this page.' );
 }
 
-if ( 'WAITING' === $tournament->getStatus() ) : ?>
+if ( 'WAITING' === $tournament->get_status() ) : ?>
 	<h2><?php _e( 'Upload Results', 'league' ) ?></h2>
 	<form name="upload-results" id="upload-results" method="post" enctype="multipart/form-data"
 	      action="<?php echo admin_url( 'admin-post.php' ) ?>" class="validate">
@@ -19,15 +19,15 @@ if ( 'WAITING' === $tournament->getStatus() ) : ?>
 		<input type="file" name="results-file" id="results-file"/>
 		<?php submit_button( __( 'Upload Results', 'league' ) ); ?>
 	</form>
-<?php elseif ( in_array( $tournament->getStatus(), array('FINISHED', 'CLOSED') ) ) : ?>
+<?php elseif ( in_array( $tournament->get_status(), array('FINISHED', 'CLOSED') ) ) : ?>
 	<h2><?php _e( 'View Results', 'league' ) ?></h2>
 	<?php
-	require_once LEAGUE_PLUGIN_DIR . 'includes/view/class-match-list-table.php';
-	require_once LEAGUE_PLUGIN_DIR . 'includes/view/class-standings-list-table.php';
+	require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-match-list-table.php';
+	require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-standings-list-table.php';
 	require_once LEAGUE_PLUGIN_DIR . 'includes/class-league-rules.php';
 
 	$matches = new Match_List_Table($tournament);
-	$standings = new Standings_List_Table($tournament, new League_Rules($tournament->getStandings()));
+	$standings = new Standings_List_Table($tournament, new League_Rules($tournament->get_standings()));
 
 	$matches->prepare_items();
 	$standings->prepare_items();

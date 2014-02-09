@@ -4,6 +4,7 @@ abstract class List_Table
 {
 	protected $items;
 	private $index;
+	private $key;
 
 	public function prepare_items() {
 		$this->items = $this->get_items();
@@ -16,7 +17,7 @@ abstract class List_Table
 	}
 
 	public function no_items() {
-		_e( 'No items found.' );
+		return __( 'No items found.' );
 	}
 
 	protected abstract function get_all_columns();
@@ -60,34 +61,42 @@ abstract class List_Table
 		return count( $this->get_grouped_columns() ) > 0;
 	}
 
-	public function display() {
-		$this->display_tablenav( 'top' );
-
-		?>
-		<table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
+	public function display( $echo = true, $footer = true ) {
+		$result = sprintf( '%s
+		<table class="wp-list-table %s">
 			<thead>
 			<tr>
-				<?php $this->print_column_headers(); ?>
+				%s
 			</tr>
 			</thead>
-
 			<tfoot>
 			<tr>
-				<?php $this->print_column_headers( false ); ?>
+				%s
 			</tr>
 			</tfoot>
-
 			<tbody id="the-list">
-			<?php $this->display_rows_or_placeholder(); ?>
+				%s
 			</tbody>
 		</table>
-		<?php
-		$this->display_tablenav( 'bottom' );
+		%s',
+			$this->get_tablenav( 'top' ),
+			implode( ' ', $this->get_table_classes() ),
+			$this->get_column_headers(),
+			$footer ? $this->get_column_headers( false ) : '',
+			$this->get_rows_or_placeholder(),
+			$this->get_tablenav( 'bottom' )
+		);
+
+		if ( $echo ) {
+			echo $result;
+		}
+		return $result;
 	}
 
-	private function print_column_headers( $with_id = true ) {
+	private function get_column_headers( $with_id = true ) {
 		list($columns, $hidden, $sortable, $grouped, $widths) = $this->get_column_info();
 
+		$result = '';
 		foreach ( $columns as $column_key => $column_display_name ) {
 			$class = array("column-$column_key");
 
@@ -108,39 +117,38 @@ abstract class List_Table
 				$class = "class='" . join( ' ', $class ) . "'";
 			}
 
-			printf( '<th scope="col" %1$s, %2$s, %3$s>%4$s</th>', $id, $class, $style, $column_display_name );
+			$result .= sprintf( '<th scope="col" %1$s, %2$s, %3$s>%4$s</th>', $id, $class, $style, $column_display_name );
 		}
+		return $result;
 	}
 
-	private function get_table_classes() {
+	protected function get_table_classes() {
 		return array('widefat', 'fixed');
 	}
 
-	private function display_tablenav( $which ) {
-		printf( '<div class="tablenav %s">', esc_attr( $which ) );
-		if ( method_exists( $this, 'display_' . $which . '_tablenav' ) ) {
-			call_user_func( array($this, 'display_' . $which . '_tablenav') );
-		} else {
-			printf( '<br class="clear"/>' );
+	private function get_tablenav( $which ) {
+		$result = sprintf( '<div class="tablenav %s">', esc_attr( $which ) );
+		if ( method_exists( $this, 'get_' . $which . '_tablenav' ) ) {
+			$result .= call_user_func( array($this, 'get_' . $which . '_tablenav') );
 		}
-		printf( '</div>' );
+		$result .= '</div>';
+		return $result;
 	}
 
-	private function display_rows_or_placeholder() {
+	private function get_rows_or_placeholder() {
 		if ( $this->has_items() ) {
-			$this->display_rows();
+			return $this->get_rows();
 		} else {
-			echo '<tr class="no-items"><td class="colspanchange" colspan="' . $this->get_column_count() . '">';
-			$this->no_items();
-			echo '</td></tr>';
+			return sprintf( '<tr class="no-items"><td class="colspanchange" colspan="%u">%s</td></tr>',
+				$this->get_column_count(), $this->no_items() );
 		}
 	}
 
-	private function display_rows() {
+	private function get_rows() {
 		$this->index = 0;
+		$result = '';
+		$this->sort();
 		if ( $this->has_grouping() ) {
-			$this->sort();
-
 			$groups = array();
 			$current_group = array($this->items[0]);
 
@@ -156,32 +164,37 @@ abstract class List_Table
 			}
 			array_push( $groups, $current_group );
 			foreach ( $groups as $group ) {
-				$this->group_header( $group );
+				$result .= $this->group_header( $group );
 				foreach ( $group as $item ) {
-					$this->single_row( $item );
+					$result .= $this->single_row( $item );
 				}
 			}
 		} else {
-			foreach ( $this->items as $item ) {
-				$this->single_row( $item );
-				$this->index ++;
+			foreach ( $this->items as $key => $item ) {
+				$this->key = $key;
+				$result .= $this->single_row( $item );
+				$this->index++;
 			}
 		}
 		$this->index = null;
+		$this->key = null;
+		return $result;
 	}
 
 	private function single_row( $item ) {
-		static $row_class = '';
-		$row_class = ($row_class == '' ? ' class="alternate"' : '');
+		static $row_class = array();
+		$row_class = (empty($row_class) ? array('alternate') : array());
 
-		echo '<tr' . $row_class . '>';
-		$this->single_row_columns( $item );
-		echo '</tr>';
+		if ( method_exists( $this, 'get_row_classes' ) ) {
+			$row_class = array_merge( $row_class, call_user_func( array($this, 'get_row_classes'), $item ) );
+		}
+
+		return sprintf( '<tr class="%s">%s</tr>', implode( ' ', $row_class ), $this->single_row_columns( $item ) );
 	}
 
 	private function single_row_columns( $item ) {
 		list($columns, $hidden) = $this->get_column_info();
-
+		$result = '';
 		foreach ( $columns as $column_name => $column_display_name ) {
 			$class = "class='$column_name column-$column_name'";
 
@@ -191,8 +204,9 @@ abstract class List_Table
 
 			$attributes = "$class$style";
 
-			printf( '<td %1$s> %2$s</td>', $attributes, $this->single_row_column_value( $column_name, $item ) );
+			$result .= sprintf( '<td %1$s> %2$s</td>', $attributes, $this->single_row_column_value( $column_name, $item ) );
 		}
+		return $result;
 	}
 
 	private function single_row_column_value( $column_name, $item ) {
@@ -200,6 +214,8 @@ abstract class List_Table
 			return call_user_func( array($this, 'column_' . $column_name), $item );
 		} elseif ( method_exists( $item, 'get' . ucfirst( $column_name ) ) ) {
 			return call_user_func( array($item, 'get' . ucfirst( $column_name )), $item );
+		} elseif ( method_exists( $item, 'get_' . $column_name ) ) {
+			return call_user_func( array($item, 'get_' . $column_name), $item );
 		} elseif ( is_array( $item ) && array_key_exists( $column_name, $item ) ) {
 			return $item[$column_name];
 		} else {
@@ -218,7 +234,7 @@ abstract class List_Table
 	}
 
 	private function group_header( array $group ) {
-		printf( '<tr class="group"><th colspan="%1$s">%2$s</th></tr>',
+		return sprintf( '<tr class="group"><th colspan="%1$s">%2$s</th></tr>',
 			$this->get_column_count(),
 			$this->get_group_header_value( $group[0] )
 		);
@@ -234,5 +250,9 @@ abstract class List_Table
 
 	protected function get_index() {
 		return $this->index;
+	}
+
+	protected function get_key() {
+		return $this->key;
 	}
 }

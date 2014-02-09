@@ -7,8 +7,9 @@ class League extends Model
 	protected $name;
 	protected $start;
 	protected $end;
-	protected $tournaments;
 	protected $standings;
+
+	protected $tournaments;
 
 	public function __construct( array $properties ) {
 		parent::__construct( $properties );
@@ -63,7 +64,7 @@ class League extends Model
 		$this->standings = $standings;
 	}
 
-	public function getStandings() {
+	public function get_standings() {
 		return $this->standings;
 	}
 
@@ -101,5 +102,13 @@ class League extends Model
 		if ( isset($this->standings[$playerId]) ) {
 			$this->standings[$playerId]['participation'] --;
 		}
+	}
+
+	public function get_tournaments() {
+		if ( ! $this->tournaments ) {
+			global $league_plugin;
+			$this->tournaments = $league_plugin->get_tournaments()->get_by_league( $this->id );
+		}
+		return $this->tournaments;
 	}
 }

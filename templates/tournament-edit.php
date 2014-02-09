@@ -26,7 +26,7 @@ endif;
 
 $leagues = $league_plugin->get_leagues()->get_all();
 
-$disabled = in_array( $tournament->getStatus(), array('FINISHED', 'CLOSED') );
+$disabled = in_array( $tournament->get_status(), array('FINISHED', 'CLOSED') );
 
 ?>
 

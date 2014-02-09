@@ -3,7 +3,7 @@ if (! current_user_can( 'publish_pages' )) {
     wp_die( 'You do not have sufficient permissions to access this page.' );
 }
 
-include_once LEAGUE_PLUGIN_DIR . '/includes/view/class-players-list-table.php';
+include_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-players-list-table.php';
 
 global $league_plugin;
 

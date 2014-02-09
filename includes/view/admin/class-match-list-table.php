@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname( __FILE__ ) . '/class-list-table.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/view/class-list-table.php';
 
 class Match_List_Table extends List_Table
 {
@@ -41,29 +41,33 @@ class Match_List_Table extends List_Table
 		} );
 	}
 
-	protected function display_top_tablenav() {
-		?>
+	protected function get_top_tablenav() {
+		return sprintf( '
 		<input type="button" class="button button-red" id="delete-results"
-		       value="<?php _e( 'Delete Results', 'league' ); ?>"/>
+		       value="%s"/>
 		<dialog id="delete-confirm-window">
 			<div>
-				<h3><?php _e( 'Are you sure?', 'league' ); ?></h3>
-
-				<p><?php _e( 'Deleting the results will rewind all points gained from this tournament and delete all matches.',
-						'league' ); ?></p>
-
-				<form name="delete-results" method="post" action="<?php echo admin_url( 'admin-post.php' ) ?>">
+				<h3>%s</h3>
+				<p>%s</p>
+				<form name="delete-results" method="post" action="%s">
 					<input type="hidden" name="action" value="delete_results"/>
-					<input type="hidden" name="id" value="<?php echo esc_attr( $this->tournament->get_id() ); ?>"/>
-					<?php wp_nonce_field( 'delete-results', '_wpnonce_delete_results' ); ?>
+					<input type="hidden" name="id" value="%s"/>
+					%s
 					<input type="submit" class="button button-primary" id="delete-confirm"
-					       value="<?php _e( 'Yes, I am sure.', 'league' ); ?>"/>
+					       value="%s"/>
 					<input type="button" class="button button-secondary" id="delete-cancel"
-					       value="<?php _e( 'No, cancel.', 'league' ); ?>"/>
+					       value="%s"/>
 				</form>
 			</div>
 		</dialog>
-	<?php
+	', __( 'Delete Results', 'league' ), __( 'Are you sure?', 'league' ),
+			__( 'Deleting the results will rewind all points gained from this tournament and delete all matches.', 'league' ),
+			admin_url( 'admin-post.php' ),
+			esc_attr( $this->tournament->get_id() ),
+			wp_nonce_field( 'delete-results', '_wpnonce_delete_results', true, false ),
+			__( 'Yes, I am sure.', 'league' ),
+			__( 'No, cancel.', 'league' )
+		);
 	}
 
 	private function get_player( $id ) {

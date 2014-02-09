@@ -66,7 +66,7 @@ class Tournament extends Model
 		$this->status = $status;
 	}
 
-	public function getStatus() {
+	public function get_status() {
 		return $this->status;
 	}
 
@@ -86,7 +86,7 @@ class Tournament extends Model
 		$this->standings = $standings;
 	}
 
-	public function getStandings() {
+	public function get_standings() {
 		return $this->standings;
 	}
 

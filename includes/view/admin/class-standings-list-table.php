@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname( __FILE__ ) . '/class-list-table.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/view/class-list-table.php';
 
 class Standings_List_Table extends List_Table
 {
@@ -19,7 +19,7 @@ class Standings_List_Table extends List_Table
 	}
 
 	protected function get_items() {
-		return $this->tournament->getStandings();
+		return $this->tournament->get_standings();
 	}
 
 	protected function get_all_columns() {
@@ -117,6 +117,6 @@ class Standings_List_Table extends List_Table
 	}
 
 	private function is_open() {
-		return 'FINISHED' === $this->tournament->getStatus();
+		return 'FINISHED' === $this->tournament->get_status();
 	}
 }

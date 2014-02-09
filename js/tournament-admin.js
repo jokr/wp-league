@@ -1,4 +1,4 @@
-(function ($) {
+(function ($, ajaxurl) {
 
     var tournamentDateElement = $('#tournament-date');
     var tournamentTimeElement = $('#tournament-time');
@@ -58,4 +58,4 @@
         $('dialog').hide();
         $('#dim').remove();
     });
-})(jQuery);
+})(jQuery, ajaxurl);

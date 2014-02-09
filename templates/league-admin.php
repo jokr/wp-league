@@ -3,7 +3,7 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 	wp_die( 'You do not have sufficient permissions to access this page.' );
 }
 
-require_once LEAGUE_PLUGIN_DIR . '/includes/view/class-leagues-list-table.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-leagues-list-table.php';
 
 global $league_plugin;
 
