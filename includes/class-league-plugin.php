@@ -27,10 +27,11 @@ class League_Plugin
 
 		if ( is_admin() ) {
 			new League_Screen($this);
-		}
+		} else {
+            add_action( 'wp_head', array($this, 'get_ajaxurl') );
+        }
 
 		add_shortcode( 'league', array('League_Shortcode', 'render') );
-		add_action( 'wp_head', array($this, 'get_ajaxurl') );
 		add_action( 'wp_ajax_nopriv_get_tournament_standings', array($this, 'ajax_get_tournament_standings') );
 		add_action( 'wp_ajax_get_tournament_standings', array($this, 'ajax_get_tournament_standings') );
 	}

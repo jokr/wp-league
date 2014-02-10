@@ -1,3 +1,7 @@
+tr.tournament-closed {
+    cursor: pointer;
+}
+
 dialog {
     position: fixed;
     left: 0;
