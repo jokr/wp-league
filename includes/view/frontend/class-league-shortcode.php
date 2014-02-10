@@ -8,8 +8,11 @@ class League_Shortcode
 	private $errors;
 
 	public static function render( $atts ) {
-		global $league_plugin;
-		$shortcode = new League_Shortcode($league_plugin->get_leagues(), $league_plugin->get_tournaments(), $league_plugin->get_players());
+		$shortcode = new League_Shortcode(
+            League_Plugin::get_instance()->get_leagues(),
+            League_Plugin::get_instance()->get_tournaments(),
+            League_Plugin::get_instance()->get_players()
+        );
 
 		$shortcode->validate_args( $atts );
 		if ( $shortcode->has_errors() ) {

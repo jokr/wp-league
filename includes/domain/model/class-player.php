@@ -11,8 +11,7 @@ class Player extends Model
 	protected $wp_user_id;
 
 	public function save() {
-		global $league_plugin;
-		$league_plugin->get_players()->save( $this );
+        League_Plugin::get_instance()->get_players()->save( $this );
 	}
 
 	/**

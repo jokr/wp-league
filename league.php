@@ -9,17 +9,15 @@ Author URI: http://www.aleaiactaest.ch
 License: GPL2
 */
 
-define('LEAGUE_PLUGIN_DIR', plugin_dir_path( __FILE__ ));
-define('LEAGUE_PLUGIN_URL', plugin_dir_url( __FILE__ ));
-define('LEAGUE_PLUGIN_VERSION', '0.1');
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+    die;
+} // end if
+
+define( 'LEAGUE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'LEAGUE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'LEAGUE_PLUGIN_VERSION', '0.1' );
 
 include_once dirname( __FILE__ ) . '/includes/class-league-plugin.php';
 include_once dirname( __FILE__ ) . '/functions.php';
-
-if ( class_exists( 'League_Plugin' ) ) {
-    $league_plugin = new League_Plugin();
-
-	register_activation_hook( __FILE__, array($league_plugin, 'activate') );
-	register_deactivation_hook( __FILE__, array($league_plugin, 'deactivate') );
-}
-
+add_action( 'plugins_loaded', array('League_Plugin', 'get_instance') );

@@ -10,10 +10,9 @@ class Match_List_Table extends List_Table
 	private $playerCache;
 
 	public function __construct( Tournament $tournament ) {
-		global $league_plugin;
 		$this->tournament = $tournament;
 		$this->matches = $tournament->getMatches();
-		$this->players = $league_plugin->get_players();
+		$this->players = League_Plugin::get_instance()->get_players();
 		$this->playerCache = array();
 	}
 

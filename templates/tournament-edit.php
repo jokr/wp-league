@@ -9,9 +9,7 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 wp_enqueue_script( 'tournament-admin' );
 wp_enqueue_style( 'tournament-admin' );
 
-global $league_plugin;
-
-$tournament = $league_plugin->get_tournaments()->get_by_id( (int) $_REQUEST['id'] );
+$tournament = League_Plugin::get_instance()->get_tournaments()->get_by_id( (int) $_REQUEST['id'] );
 
 if ( is_wp_error( $tournament ) ) :
 	?>
@@ -24,7 +22,7 @@ if ( is_wp_error( $tournament ) ) :
 	return;
 endif;
 
-$leagues = $league_plugin->get_leagues()->get_all();
+$leagues = League_Plugin::get_instance()->get_leagues()->get_all();
 
 $disabled = in_array( $tournament->get_status(), array('FINISHED', 'CLOSED') );
 

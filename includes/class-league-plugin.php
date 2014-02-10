@@ -12,109 +12,114 @@ include_once dirname( __FILE__ ) . '/class-wer-result-handler.php';
 
 class League_Plugin
 {
-	private $leagues;
-	private $tournaments;
-	private $players;
-	private $matches;
-	private $events;
+    const VERSION = '0.0.1';
 
-	public function __construct() {
-		$this->matches = new Matches();
-		$this->tournaments = new Tournaments($this->matches);
-		$this->leagues = new Leagues($this->tournaments);
-		$this->players = new Players();
-		$this->events = new League_Events();
+    protected $plugin_slug;
 
-		if ( is_admin() ) {
-			new League_Screen($this);
-		} else {
-            add_action( 'wp_head', array($this, 'get_ajaxurl') );
+    private $leagues;
+    private $tournaments;
+    private $players;
+    private $matches;
+    private $events;
+
+    private static $instance;
+
+    public static function get_instance() {
+        if (null == self::$instance) {
+            self::$instance = new League_Plugin();
         }
 
-		add_shortcode( 'league', array('League_Shortcode', 'render') );
-		add_action( 'wp_ajax_nopriv_get_tournament_standings', array($this, 'ajax_get_tournament_standings') );
-		add_action( 'wp_ajax_get_tournament_standings', array($this, 'ajax_get_tournament_standings') );
-	}
+        return self::$instance;
+    }
 
-	public function activate() {
-		update_option( 'league', array() );
-		$this->update_database();
-	}
+    private function __construct() {
+        // Setup repositories
+        $this->matches = new Matches();
+        $this->tournaments = new Tournaments( $this->matches );
+        $this->leagues = new Leagues( $this->tournaments );
+        $this->players = new Players();
+        $this->events = new League_Events();
 
-	public function update_database() {
-		$this->leagues->create_table();
-		$this->tournaments->create_table();
-		$this->players->create_table();
-		$this->matches->create_table();
-		$this->events->create_table();
-	}
+        // Register activition and deactiviation
+        register_activation_hook( __FILE__, array( $this, 'activate' ) );
 
-	public function get_ajaxurl() {
-		?>
-		<script type="text/javascript">
-			var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
-		</script>
-	<?php
-	}
+        if (is_admin()) {
+            new League_Screen( $this );
+        } else {
+            add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
+        }
 
-	public function ajax_get_tournament_standings() {
-		if ( isset($_GET['tournament']) && is_numeric( $_GET['tournament'] ) ) {
-			$result = $this->tournaments->get_by_id( $_GET['tournament'] );
+        //add_rewrite_rule( '^league-signup', $rewrite, $position );
 
-			header( 'Content-Type: text/html' );
-			printf( '<h3>%s</h3>',
-				__( sprintf( 'Standings from the %s tournament on %s', $result->getFormat(),
-					date_i18n( get_option( 'date_format' ), strtotime( $result->getDate() ) ) ), 'league' )
-			);
-			printf( '<table>' );
-			printf( '<thead><tr><th>%s</th><th>%s</th><th>%s</th></tr>',
-				__( 'Rank', 'league' ), __( 'Player', 'league' ), __( 'Points', 'rank' ) );
-			foreach ( $result->get_standings() as $rank => $standing ) {
-				printf( '<tr>' );
-				printf( '<td>%s</td><td>%s</td><td>%s</td>',
-					$rank, $this->players->get_by_id( $standing['player'] )->get_full_name(), $standing['points'] );
-				printf( '</tr>' );
-			}
-			printf( '</table>' );
-		} else {
-			http_response_code( 406 );
-			echo "No tournament id sent or it is non numeric.";
-		}
-		die();
-	}
+        add_shortcode( 'league', array( 'League_Shortcode', 'render' ) );
+        add_action( 'wp_ajax_nopriv_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );
+        add_action( 'wp_ajax_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );
+    }
 
-	public function get_setting( $handle ) {
-		$options = get_option( 'league' );
-		if ( isset($options[$handle]) ) {
-			return $options[$handle];
-		} else {
-			return null;
-		}
-	}
+    public function activate() {
+        update_option( 'league', array() );
+        $this->update_database();
+    }
 
-	public function set_setting( $handle, $new_value ) {
-		$options = get_option( 'league' );
-		$options[$handle] = $new_value;
-		update_option( 'league', $options );
-	}
+    public function update_database() {
+        $this->leagues->create_table();
+        $this->tournaments->create_table();
+        $this->players->create_table();
+        $this->matches->create_table();
+        $this->events->create_table();
+    }
 
-	public function get_leagues() {
-		return $this->leagues;
-	}
+    public function get_ajaxurl() {
+        ?>
+        <script type="text/javascript">
+            var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+        </script>
+    <?php
+    }
 
-	public function get_tournaments() {
-		return $this->tournaments;
-	}
+    public function ajax_get_tournament_standings() {
+        if (isset( $_GET['tournament'] ) && is_numeric( $_GET['tournament'] )) {
+            $result = $this->tournaments->get_by_id( $_GET['tournament'] );
 
-	public function get_players() {
-		return $this->players;
-	}
+            header( 'Content-Type: text/html' );
+            printf( '<h3>%s</h3>',
+                __( sprintf( 'Standings from the %s tournament on %s', $result->getFormat(),
+                    date_i18n( get_option( 'date_format' ), strtotime( $result->getDate() ) ) ), 'league' )
+            );
+            printf( '<table>' );
+            printf( '<thead><tr><th>%s</th><th>%s</th><th>%s</th></tr>',
+                __( 'Rank', 'league' ), __( 'Player', 'league' ), __( 'Points', 'rank' ) );
+            foreach ($result->get_standings() as $rank => $standing) {
+                printf( '<tr>' );
+                printf( '<td>%s</td><td>%s</td><td>%s</td>',
+                    $rank, $this->players->get_by_id( $standing['player'] )->get_full_name(), $standing['points'] );
+                printf( '</tr>' );
+            }
+            printf( '</table>' );
+        } else {
+            http_response_code( 406 );
+            echo "No tournament id sent or it is non numeric.";
+        }
+        die();
+    }
 
-	public function get_matches() {
-		return $this->matches;
-	}
+    public function get_leagues() {
+        return $this->leagues;
+    }
 
-	public function get_events() {
-		return $this->events;
-	}
+    public function get_tournaments() {
+        return $this->tournaments;
+    }
+
+    public function get_players() {
+        return $this->players;
+    }
+
+    public function get_matches() {
+        return $this->matches;
+    }
+
+    public function get_events() {
+        return $this->events;
+    }
 }

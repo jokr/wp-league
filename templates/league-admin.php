@@ -5,9 +5,7 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-leagues-list-table.php';
 
-global $league_plugin;
-
-$list_table = new Leagues_List_Table($league_plugin->get_leagues());
+$list_table = new Leagues_List_Table(League_Plugin::get_instance()->get_leagues());
 $list_table->prepare_items();
 
 wp_enqueue_script( 'league-admin' );

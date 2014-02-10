@@ -10,11 +10,10 @@ class Standings_List_Table extends List_Table
 	private $events;
 
 	public function __construct( Tournament $tournament, League_Rules $rules ) {
-		global $league_plugin;
 		$this->tournament = $tournament;
-		$this->players = $league_plugin->get_players();
+		$this->players = League_Plugin::get_instance()->get_players();
 		$this->rules = $rules;
-		$this->events = $league_plugin->get_events();
+		$this->events = League_Plugin::get_instance()->get_events();
 		wp_enqueue_script( 'prize-control' );
 	}
 

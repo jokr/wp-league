@@ -24,8 +24,7 @@ abstract class League_Event extends Model
 	}
 
 	public function save() {
-		global $league_plugin;
-		$league_plugin->get_events()->save($this);
+        League_Plugin::get_instance()->get_events()->save($this);
 	}
 
 	public function get_vars() {

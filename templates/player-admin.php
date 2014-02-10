@@ -5,9 +5,7 @@ if (! current_user_can( 'publish_pages' )) {
 
 include_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-players-list-table.php';
 
-global $league_plugin;
-
-$list_table = new Players_List_Table( $league_plugin->get_players() );
+$list_table = new Players_List_Table( League_Plugin::get_instance()->get_players() );
 $list_table->prepare_items();
 
 wp_enqueue_script( 'tournament-admin' );

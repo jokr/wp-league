@@ -24,8 +24,7 @@ class League extends Model
 	}
 
 	public function save() {
-		global $league_plugin;
-		$league_plugin->get_leagues()->save( $this );
+		League_Plugin::get_instance()->get_leagues()->save( $this );
 	}
 
 	public function setEnd( $end ) {
@@ -106,8 +105,7 @@ class League extends Model
 
 	public function get_tournaments() {
 		if ( ! $this->tournaments ) {
-			global $league_plugin;
-			$this->tournaments = $league_plugin->get_tournaments()->get_by_league( $this->id );
+			$this->tournaments = League_Plugin::get_instance()->get_tournaments()->get_by_league( $this->id );
 		}
 		return $this->tournaments;
 	}

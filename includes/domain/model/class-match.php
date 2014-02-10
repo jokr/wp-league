@@ -15,8 +15,7 @@ class Match extends Model
 	protected $draws;
 
 	public function save() {
-		global $league_plugin;
-		$league_plugin->get_matches()->save( $this );
+        League_Plugin::get_instance()->get_matches()->save( $this );
 	}
 
 	/**

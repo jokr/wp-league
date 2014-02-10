@@ -34,8 +34,7 @@ class Tournament extends Model
 	}
 
 	public function save() {
-		global $league_plugin;
-		$league_plugin->get_tournaments()->save( $this );
+        League_Plugin::get_instance()->get_tournaments()->save( $this );
 	}
 
 	public function setDate( $date ) {
@@ -99,8 +98,7 @@ class Tournament extends Model
 	}
 
 	public function get_league() {
-		global $league_plugin;
-		return $league_plugin->get_leagues()->get_by_id( $this->getLeagueId() );
+		return League_Plugin::get_instance()->get_leagues()->get_by_id( $this->getLeagueId() );
 	}
 
 	public function delete_results() {
