@@ -8,6 +8,8 @@ include_once dirname( __FILE__ ) . '/domain/persistence/class-league-events.php'
 require_once dirname( __FILE__ ) . '/view/frontend/class-league-shortcode.php';
 require_once dirname( __FILE__ ) . '/view/admin/class-league-screen.php';
 
+require_once dirname( __FILE__ ) . '/class-league-signup-page.php';
+
 include_once dirname( __FILE__ ) . '/class-wer-result-handler.php';
 
 class League_Plugin
@@ -47,10 +49,16 @@ class League_Plugin
             new League_Screen( $this );
         } else {
             add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
+            $helloworld = new League_Signup_Page( array(
+                'url'		=> 'league-signup',
+                'pagename'	=> 'league-signup'
+            ));
         }
 
-        //add_rewrite_rule( '^league-signup', $rewrite, $position );
+        add_action( 'init', array( $this, 'init' ) );
+    }
 
+    public function init() {
         add_shortcode( 'league', array( 'League_Shortcode', 'render' ) );
         add_action( 'wp_ajax_nopriv_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );
         add_action( 'wp_ajax_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );

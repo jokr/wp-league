@@ -1,0 +1,8 @@
+#league-register {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+#league-register label {
+    display: inline-block;
+    min-width: 300px;
+}
