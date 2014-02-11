@@ -1,8 +1,38 @@
 #league-register {
     font-family: Helvetica, Arial, sans-serif;
+    width: 415px;
+    margin: auto;
 }
 
 #league-register label {
     display: inline-block;
-    min-width: 300px;
+    min-width: 200px;
+    font-weight: bold;
+}
+
+#league-register input[type=text], #league-register input[type=email] {
+    font-family: Helvetica, Arial, sans-serif;
+    min-width: 200px;
+    margin-bottom: 15px;
+}
+
+#league-register label.error {
+    color: darkorange;
+}
+
+#league-register p {
+    font-size: .9em;
+}
+
+#league-register #league-signup {
+    cursor: pointer;
+    color: white;
+    float: right;
+    display: inline-block;
+    padding: 5px 15px;
+    font-weight: bold;
+    border-radius: 1px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background: rgb(223, 117, 20);
+    border: 1px solid darkorange;
 }

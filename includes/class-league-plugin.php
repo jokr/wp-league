@@ -49,7 +49,7 @@ class League_Plugin
             new League_Screen( $this );
         } else {
             add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
-            $helloworld = new League_Signup_Page( array(
+            new League_Signup_Page( array(
                 'url'		=> 'league-signup',
                 'pagename'	=> 'league-signup'
             ));
