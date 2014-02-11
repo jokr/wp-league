@@ -11,17 +11,6 @@ wp_enqueue_style( 'tournament-admin' );
 
 $tournament = League_Plugin::get_instance()->get_tournaments()->get_by_id( (int) $_REQUEST['id'] );
 
-if ( is_wp_error( $tournament ) ) :
-	?>
-	<div id="message" class="error">
-		<p>
-			<strong><?php _e( 'You did not select a valid item id for editing.', 'league' ); ?></strong>
-		</p>
-	</div>
-	<?php
-	return;
-endif;
-
 $leagues = League_Plugin::get_instance()->get_leagues()->get_all();
 
 $disabled = in_array( $tournament->get_status(), array('FINISHED', 'CLOSED') );

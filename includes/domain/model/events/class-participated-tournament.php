@@ -70,7 +70,7 @@ class Participated_Tournament extends League_Event
 	}
 
 	public function get_params() {
-		$result = array();
+		$result = array('rank' => $this->rank);
 		if ( isset($this->credits) ) {
 			$result['credits'] = $this->credits->get_id();
 		}
