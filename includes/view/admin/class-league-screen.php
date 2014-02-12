@@ -1,26 +1,18 @@
 <?php
 
 require_once dirname( __FILE__ ) . '/class-admin-screen.php';
-require_once dirname( __FILE__ ) . '/class-tournament-screen.php';
-require_once dirname( __FILE__ ) . '/class-player-screen.php';
 
 class League_Screen extends Admin_Screen
 {
 	private $leagues;
+	private $tournaments;
 
-	public function __construct( League_Plugin $plugin ) {
+	public function __construct( League_Service $leagues, Tournament_Service $tournaments ) {
 		parent::__construct();
-		$this->leagues = $plugin->get_leagues();
+		$this->leagues = $leagues;
+		$this->tournaments = $tournaments;
 
 		add_action( 'admin_post_add_league', array($this, 'add_league') );
-
-		new Tournament_Screen(
-			$plugin->get_tournaments(),
-			$plugin->get_leagues(),
-			$plugin->get_players(),
-			$plugin->get_matches()
-		);
-		new Player_Screen();
 	}
 
 	public function add_admin_menu() {
@@ -38,7 +30,12 @@ class League_Screen extends Admin_Screen
 	}
 
 	public function load_league_menu() {
-		load_template( LEAGUE_PLUGIN_DIR . '/templates/league-admin.php' );
+        wp_enqueue_script( 'league-admin' );
+        wp_enqueue_style( 'league-admin' );
+        require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-leagues-list-table.php';
+        $league_list = new Leagues_List_Table($this->leagues, $this->tournaments);
+        $league_list->prepare_items();
+		include_once LEAGUE_PLUGIN_DIR . 'templates/league-admin.php';
 	}
 
 	public function ajax_callbacks() {
@@ -65,12 +62,11 @@ class League_Screen extends Admin_Screen
 		check_admin_referer( 'add-league', '_wpnonce_add_league' );
 
 		if ( isset($_POST['league']) ) {
-			$league = new League(array(
-				'name' => sanitize_text_field( $_POST['league']['name'] ),
-				'start' => sanitize_text_field( $_POST['league']['start'] ),
-				'end' => sanitize_text_field( $_POST['league']['end'] )
-			));
-			$this->leagues->save( $league );
+            $this->leagues->add_league(
+                sanitize_text_field( $_POST['league']['name'] ),
+                sanitize_text_field( $_POST['league']['start'] ),
+                sanitize_text_field( $_POST['league']['end'] )
+            );
 		}
 
 		wp_redirect( add_query_arg( 'updated', 'true', admin_url( 'admin.php?page=leagues' ) ) );

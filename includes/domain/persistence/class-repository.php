@@ -23,21 +23,17 @@ abstract class Repository
 		return $element->get_id();
 	}
 
-	protected function _get_by_id( $id ) {
+    public function get_by_id( $id ) {
 		global $wpdb;
 		return $wpdb->get_row( "SELECT $this->columns FROM $this->table WHERE id = $id", ARRAY_A );
 	}
 
-	public abstract function get_by_id( $id );
-
-	protected function _get_all() {
+    public function get_all() {
 		global $wpdb;
 		return $wpdb->get_results( "SELECT $this->columns FROM $this->table ORDER BY $this->sort", ARRAY_A );
 	}
 
-	public abstract function get_all();
-
-	protected function _query( $query ) {
+	protected function query( $query ) {
 		global $wpdb;
 		return $wpdb->get_results( "SELECT $this->columns FROM $this->table " . $query, ARRAY_A );
 	}
