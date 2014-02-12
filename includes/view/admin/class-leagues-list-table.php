@@ -4,16 +4,14 @@ require_once LEAGUE_PLUGIN_DIR . 'includes/view/class-list-table.php';
 
 class Leagues_List_Table extends List_Table
 {
-    private $leagues;
-    private $tournaments;
+    private $screen;
 
-    public function __construct( League_Service $leagues, Tournament_Service $tournaments ) {
-        $this->leagues = $leagues;
-        $this->tournaments = $tournaments;
+    public function __construct( League_Screen $screen ) {
+        $this->screen = $screen;
     }
 
     protected function get_items() {
-        return $this->leagues->get_all();
+        return $this->screen->get_all_leagues();
     }
 
     function get_sortable_columns() {
@@ -35,6 +33,13 @@ class Leagues_List_Table extends List_Table
         );
     }
 
+    function column_name( $league ) {
+        return $league['name'] . parent::row_actions(
+            $this->screen->get_edit_url( $league['id'] ),
+            $this->screen->get_delete_url( $league['id'] )
+        );
+    }
+
     function column_start( $league ) {
         return date_i18n( get_option( 'date_format' ), strtotime( $league['start'] ) );
     }
@@ -44,6 +49,6 @@ class Leagues_List_Table extends List_Table
     }
 
     function column_tournaments( $league ) {
-        return count( $this->tournaments->get_all_for_league( $league['id'] ) );
+        return $this->screen->get_tournament_count( $league['id'] ) ;
     }
 }

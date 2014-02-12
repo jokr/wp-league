@@ -20,4 +20,8 @@ class League_Service
     public function get_all() {
         return $this->leagues->get_all();
     }
+
+    public function delete( $id ) {
+        $this->leagues->delete( $id );
+    }
 }
