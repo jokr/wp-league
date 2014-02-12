@@ -6,7 +6,7 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 	wp_die( 'You do not have sufficient permissions to access this page.' );
 }
 
-if ( 'WAITING' === $tournament->get_status() ) : ?>
+if ( 'OPEN' === $tournament->get_status() ) : ?>
 	<h2><?php _e( 'Upload Results', 'league' ) ?></h2>
 	<form name="upload-results" id="upload-results" method="post" enctype="multipart/form-data"
 	      action="<?php echo admin_url( 'admin-post.php' ) ?>" class="validate">
