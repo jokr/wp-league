@@ -17,18 +17,18 @@ class League_Events extends Repository
     }
 
     public function get_by_id( $id ) {
-        // TODO: Implement get_by_id() method.
+        return parent::_get_by_id( $id );
     }
 
     public function get_all() {
-        // TODO: Implement get_all() method.
+        return parent::_get_all();
     }
 
     public function get_credits( Tournament $tournament, Player $player ) {
         $t_id = $tournament->get_id();
         $p_id = $player->get_id();
         $result = parent::_query( "WHERE type = 'CREDIT_POINTS' AND tournament_id = $t_id AND player_id = $p_id" );
-        if ( !empty( $result ) ) {
+        if (! empty( $result )) {
             $params = unserialize( $result[0]['params'] );
             return $params['credits'];
         } else {
@@ -40,7 +40,7 @@ class League_Events extends Repository
         $t_id = $tournament->get_id();
         $p_id = $player->get_id();
         $result = parent::_query( "WHERE type = 'LEAGUE POINTS' AND tournament_id = $t_id AND player_id = $p_id" );
-        if ( !empty( $result ) ) {
+        if (! empty( $result )) {
             $params = unserialize( $result[0]['params'] );
             return $params['points'];
         } else {
@@ -52,7 +52,7 @@ class League_Events extends Repository
         $t_id = $tournament->get_id();
         $p_id = $player->get_id();
         $result = parent::_query( "WHERE type = 'LEAGUE POINTS' AND tournament_id = $t_id AND player_id = $p_id" );
-        if ( !empty( $result ) ) {
+        if (! empty( $result )) {
             $params = unserialize( $result[0]['params'] );
             return $params['winner'];
         } else {
@@ -86,5 +86,9 @@ class League_Events extends Repository
     public function get_by_player( Player $player ) {
         $p_id = $player->get_id();
         return parent::_query( "WHERE player_id = $p_id" );
+    }
+
+    public function rewind( $type, array $params ) {
+
     }
 }

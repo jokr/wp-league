@@ -54,10 +54,6 @@ class Participated_Tournament extends League_Event
 		return $this->tournament->getDate();
 	}
 
-	public function rewind( array $params ) {
-		// TODO: Implement rewind() method.
-	}
-
 	public function get_type() {
 		return 'PARTICIPATION_EVENT';
 	}

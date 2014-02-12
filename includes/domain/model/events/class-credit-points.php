@@ -40,8 +40,4 @@ class Credit_Points extends League_Event
 			'credits' => $this->credits
 		);
 	}
-
-	public function rewind( array $params ) {
-		$this->player->award_credits( - $this->credits );
-	}
 }

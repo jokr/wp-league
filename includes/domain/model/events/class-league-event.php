@@ -17,8 +17,6 @@ abstract class League_Event extends Model
 
 	protected abstract function _apply();
 
-	public abstract function rewind(array $params);
-
 	public function has_been_applied() {
 		return isset($this->id);
 	}

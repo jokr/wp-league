@@ -54,8 +54,4 @@ class League_Points extends League_Event
 			'points' => $this->points
 		);
 	}
-
-	public function rewind( array $params ) {
-		// TODO: Implement rewind() method.
-	}
 }
