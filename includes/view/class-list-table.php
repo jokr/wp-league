@@ -127,7 +127,7 @@ abstract class List_Table
     }
 
     private function get_tablenav( $which ) {
-        $result = sprintf( '<div class="tablenav %s">', esc_attr( $which ) );
+		$result = sprintf( '<div class="tablenav %s">', esc_attr( $which ) );
         if ( method_exists( $this, 'get_' . $which . '_tablenav' ) ) {
             $result .= call_user_func( array( $this, 'get_' . $which . '_tablenav' ) );
         }

@@ -35,7 +35,7 @@ class Standings_List_Table extends List_Table
 
 	protected function get_column_widths() {
 		return array(
-			'rank' => '5%',
+			'rank' => '7%',
 			'name' => '30%'
 		);
 	}
@@ -44,16 +44,20 @@ class Standings_List_Table extends List_Table
 		return array('player_id');
 	}
 
-	protected function display_top_tablenav() {
+	protected function get_top_tablenav() {
 		if ( $this->is_open() ) {
-			submit_button( __( 'Save All', 'league' ), 'primary', 'submit', false );
-			printf( '<input type="button" class="button reset-league-points" value="%s" />', __( 'Reset', 'league' ) );
-			printf( '<span class="control-values">%s%s%s</span>',
-				$this->disabled_number_input( __( 'Players', 'league' ), 'players', count( $this->items ) ),
-				$this->disabled_number_input( __( 'Recommended Prize Pool', 'league' ), 'rec-pool',
-					$this->rules->get_recommended_prize_pool() ),
-				$this->disabled_number_input( __( 'Current Prize Pool', 'league' ), 'cur-pool', count( $this->items ) )
+			return sprintf('%s%s%s',
+				get_submit_button(__( 'Save All', 'league' ), 'primary', 'submit', false),
+				sprintf( '<input type="button" class="button reset-league-points" value="%s" />', __( 'Reset', 'league' ) ),
+				sprintf( '<span class="control-values">%s%s%s</span>',
+					$this->disabled_number_input( __( 'Players', 'league' ), 'players', count( $this->items ) ),
+					$this->disabled_number_input( __( 'Recommended Prize Pool', 'league' ), 'rec-pool',
+						$this->rules->get_recommended_prize_pool() ),
+					$this->disabled_number_input( __( 'Current Prize Pool', 'league' ), 'cur-pool', count( $this->items ) )
+				)
 			);
+		} else {
+			return '';
 		}
 	}
 
