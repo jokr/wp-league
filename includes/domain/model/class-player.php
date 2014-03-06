@@ -10,8 +10,18 @@ class Player extends Model
 	protected $credits;
 	protected $wp_user_id;
 
-	public function save() {
-        League_Plugin::get_instance()->get_players()->save( $this );
+	public static function from_array( $id, array $array ) {
+		$result = new Player( $array['first'], $array['last'], $array['dci'] );
+		$result->set_id( $id );
+		$result->set_credits( $array['credits'] );
+		$result->set_wp_user_id( $array['wp_user_id'] );
+		return $result;
+	}
+
+	public function __construct( $first, $last, $dci ) {
+		$this->first = $first;
+		$this->last = $last;
+		$this->dci = $dci;
 	}
 
 	/**
@@ -24,43 +34,43 @@ class Player extends Model
 		}
 	}
 
-	public function setDci( $dci ) {
+	public function set_dci( $dci ) {
 		$this->dci = $dci;
 	}
 
-	public function getDci() {
+	public function get_dci() {
 		return $this->dci;
 	}
 
-	public function setFirst( $first ) {
+	public function set_first( $first ) {
 		$this->first = $first;
 	}
 
-	public function getFirst() {
+	public function get_first() {
 		return $this->first;
 	}
 
-	public function setLast( $last ) {
+	public function set_last( $last ) {
 		$this->last = $last;
 	}
 
-	public function getLast() {
+	public function get_last() {
 		return $this->last;
 	}
 
-	public function setCredits( $credits ) {
+	public function set_credits( $credits ) {
 		$this->credits = $credits;
 	}
 
-	public function getCredits() {
+	public function get_credits() {
 		return $this->credits;
 	}
 
-	public function setWpUserId( $wp_user_id ) {
+	public function set_wp_user_id( $wp_user_id ) {
 		$this->wp_user_id = $wp_user_id;
 	}
 
-	public function getWpUserId() {
+	public function get_wp_user_id() {
 		return $this->wp_user_id;
 	}
 

@@ -16,7 +16,7 @@ class Players extends Repository
 	}
 
 	public function get_by_id( $id ) {
-		return new Player(parent::_get_by_id( $id ));
+		return Player::from_array( $id, parent::get_by_id( $id ) );
 	}
 
 	public function get_all() {
@@ -25,7 +25,7 @@ class Players extends Repository
 
 	public function find_by_dci( $dci ) {
 		$result = $this->get_objects( parent::_query( "WHERE dci = $dci" ) );
-		if ( empty($result) ) {
+		if ( empty( $result ) ) {
 			return null;
 		} else {
 			return $result[0];
@@ -51,14 +51,14 @@ class Players extends Repository
 		)
 		DEFAULT COLLATE utf8_general_ci;";
 
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbdelta( $sql );
 	}
 
 	private function get_objects( array $players ) {
 		$result = array();
 		foreach ( $players as $id => $player ) {
-			$result[$id] = new Player($player);
+			$result[$id] = new Player( $player );
 		}
 		return $result;
 	}

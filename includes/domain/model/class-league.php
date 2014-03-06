@@ -8,12 +8,14 @@ class League extends Model
     protected $start;
     protected $end;
     protected $standings;
+	private $tournaments;
 
     public function __construct( $name, $start, $end, $standings = array() ) {
         $this->name = $name;
         $this->start = $start;
         $this->end = $end;
         $this->standings = $standings;
+		$this->tournaments = array();
     }
 
     public function get_vars() {
@@ -54,6 +56,14 @@ class League extends Model
     public function get_standings() {
         return $this->standings;
     }
+
+	public function set_tournaments(array $tournaments) {
+		$this->tournaments = $tournaments;
+	}
+
+	public function get_tournaments() {
+		return $this->tournaments;
+	}
 
     public function add_player( $player_id ) {
         if (! isset( $this->standings[$player_id] )) {

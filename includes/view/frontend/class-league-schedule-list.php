@@ -7,7 +7,7 @@ class League_Schedule_List extends List_Table
     private $league;
     private $players;
 
-    public function __construct( League $league, Players $players ) {
+    public function __construct( League $league, Player_Service $players ) {
         $this->league = $league;
         $this->players = $players;
     }
@@ -28,7 +28,7 @@ class League_Schedule_List extends List_Table
 
     protected function sort() {
         uasort( $this->items, function ( Tournament $a, Tournament $b ) {
-            return strtotime( $a->getDate() ) - strtotime( $b->getDate() );
+            return strtotime( $a->get_date() ) - strtotime( $b->get_date() );
         } );
     }
 
@@ -41,11 +41,11 @@ class League_Schedule_List extends List_Table
     }
 
     protected function column_date( Tournament $tournament ) {
-        $date = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $tournament->getDate() ) );
+        $date = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $tournament->get_date() ) );
         if ( 'CLOSED' == $tournament->get_status() ) {
             return esc_html( $date );
-        } elseif ( strlen( $tournament->getUrl() ) > 0 ) {
-            return sprintf( '<a href="%s">%s</a>', esc_url( $tournament->getUrl() ), esc_html( $date ) );
+        } elseif ( strlen( $tournament->get_url() ) > 0 ) {
+            return sprintf( '<a href="%s">%s</a>', esc_url( $tournament->get_url() ), esc_html( $date ) );
         } else {
             return esc_html( $date );
         }

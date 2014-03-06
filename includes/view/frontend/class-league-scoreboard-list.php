@@ -7,7 +7,7 @@ class League_Scoreboard_List extends List_Table
 	private $league;
 	private $players;
 
-	public function __construct( League $league, Players $players ) {
+	public function __construct( League $league, Player_Service $players ) {
 		$this->league = $league;
 		$this->players = $players;
 	}
@@ -27,7 +27,7 @@ class League_Scoreboard_List extends List_Table
 	}
 
 	protected function get_table_classes() {
-		return array('league', 'league-scoreboard');
+		return array( 'league', 'league-scoreboard' );
 	}
 
 	protected function sort() {
@@ -53,6 +53,6 @@ class League_Scoreboard_List extends List_Table
 	}
 
 	protected function column_player() {
-		return $this->players->get_by_id($this->get_key())->get_full_name();
+		return $this->players->get_by_id( $this->get_key() )->get_full_name();
 	}
 }

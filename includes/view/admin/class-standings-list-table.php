@@ -51,7 +51,7 @@ class Standings_List_Table extends List_Table
 			printf( '<span class="control-values">%s%s%s</span>',
 				$this->disabled_number_input( __( 'Players', 'league' ), 'players', count( $this->items ) ),
 				$this->disabled_number_input( __( 'Recommended Prize Pool', 'league' ), 'rec-pool',
-					$this->rules->get_recommended_prize_pool() ),
+				$this->rules->get_recommended_prize_pool() ),
 				$this->disabled_number_input( __( 'Current Prize Pool', 'league' ), 'cur-pool', count( $this->items ) )
 			);
 		}

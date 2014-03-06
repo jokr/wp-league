@@ -1,10 +1,18 @@
 <?php
 
-require_once dirname( __FILE__ ) . '/domain/persistence/class-leagues.php';
-require_once dirname( __FILE__ ) . '/domain/persistence/class-tournaments.php';
-require_once dirname( __FILE__ ) . '/service/class-league-service.php';
-require_once dirname( __FILE__ ) . '/service/class-tournament-service.php';
-require_once dirname( __FILE__ ) . '/view/admin/class-league-screen.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/domain/persistence/class-leagues.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/domain/persistence/class-tournaments.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/domain/persistence/class-players.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/domain/persistence/class-matches.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/domain/persistence/class-league-events.php';
+
+require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-league-service.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-tournament-service.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-player-service.php';
+
+require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-league-screen.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/view/frontend/class-league-shortcode.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/class-league-signup-page.php';
 
 class League_Plugin
 {
@@ -12,6 +20,16 @@ class League_Plugin
     const PLUGIN_SLUG = 'league';
 
     private static $instance;
+
+	private $leagues;
+	private $tournaments;
+	private $players;
+	private $matches;
+	private $events;
+
+	private $league_service;
+	private $tournament_service;
+	private $player_service;
 
     public static function get_instance() {
         if ( null == self::$instance ) {
@@ -22,43 +40,34 @@ class League_Plugin
     }
 
     private function __construct() {
-        if ( is_admin() ) {
-            new League_Screen(
-                new League_Service( new Leagues() ),
-                new Tournament_Service( new Tournaments() )
-            );
-        }
+		$this->leagues = new Leagues();
+		$this->tournaments = new Tournaments();
+		$this->players = new Players();
+		$this->matches = new Matches();
+		$this->events = new League_Events();
 
-        add_action( 'init', array( $this, 'init' ) );
-    }
+		$this->league_service = new League_Service( $this->leagues, $this->tournaments );
+		$this->tournament_service = new Tournament_Service( $this->tournaments );
+		$this->player_service = new Player_Service( $this->players );
 
-    private function __Aconstruct() {
-        // Setup repositories
-        $this->matches = new Matches();
-        $this->players = new Players();
-        $this->events = new League_Events();
+		// Register activation and deactivation
+		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 
-        // Setup service
-        $this->tournament_service = new Tournament_Service( $this->tournaments );
-
-        // Register activition and deactiviation
-        register_activation_hook( __FILE__, array( $this, 'activate' ) );
-
-        if ( is_admin() ) {
-            new League_Screen( $this );
+		if ( is_admin() ) {
+            new League_Screen($this->league_service, $this->tournament_service );
         } else {
-            add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
-            new League_Signup_Page( array(
-                'url' => 'league-signup',
-                'pagename' => 'league-signup'
-            ) );
-        }
+			add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
+			new League_Signup_Page( array(
+				'url' => 'league-signup',
+				'pagename' => 'league-signup'
+			) );
+		}
 
         add_action( 'init', array( $this, 'init' ) );
     }
 
     public function init() {
-        add_shortcode( 'league', array( 'League_Shortcode', 'render' ) );
+        add_shortcode( 'league', array( new League_Shortcode( $this->league_service, $this->player_service ), 'render' ) );
         add_action( 'wp_ajax_nopriv_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );
         add_action( 'wp_ajax_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );
     }
@@ -86,12 +95,12 @@ class League_Plugin
 
     public function ajax_get_tournament_standings() {
         if ( isset( $_GET['tournament'] ) && is_numeric( $_GET['tournament'] ) ) {
-            $result = $this->tournaments->get_by_id( $_GET['tournament'] );
+            $result = $this->tournament_service->get_by_id( $_GET['tournament'] );
 
             header( 'Content-Type: text/html' );
             printf( '<h3>%s</h3>',
-                __( sprintf( 'Standings from the %s tournament on %s', $result->getFormat(),
-                    date_i18n( get_option( 'date_format' ), strtotime( $result->getDate() ) ) ), 'league' )
+                __( sprintf( 'Standings from the %s tournament on %s', $result->get_format(),
+                    date_i18n( get_option( 'date_format' ), strtotime( $result->get_date() ) ) ), 'league' )
             );
             printf( '<table>' );
             printf( '<thead><tr><th>%s</th><th>%s</th><th>%s</th></tr>',

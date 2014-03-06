@@ -13,6 +13,25 @@ class Tournament extends Model
 	protected $standings;
 	protected $xml;
 
+	function __construct( $league_id, $date, $format ) {
+		$this->league_id = $league_id;
+		$this->format = $format;
+		$this->date = $date;
+		$this->matches = array();
+		$this->status = 'OPEN';
+		$this->standings = array();
+	}
+
+	public static function from_array($id, array $array) {
+		$result = new Tournament($array['league_id'], $array['date'], $array['format']);
+		$result->set_id($id);
+		$result->set_status($array['status']);
+		$result->set_url($array['url']);
+		$result->set_standings(unserialize($array['standings']));
+		$result->set_xml($array['xml']);
+		return $result;
+	}
+
 	public function add_results( $xml, $standings ) {
 		$this->xml = $xml;
 		$this->standings = $standings;
@@ -33,35 +52,31 @@ class Tournament extends Model
 		return $result;
 	}
 
-	public function save() {
-        League_Plugin::get_instance()->get_tournaments()->save( $this );
-	}
-
-	public function setDate( $date ) {
+	public function set_date( $date ) {
 		$this->date = $date;
 	}
 
-	public function getDate() {
+	public function get_date() {
 		return $this->date;
 	}
 
-	public function setFormat( $format ) {
+	public function set_format( $format ) {
 		$this->format = $format;
 	}
 
-	public function getFormat() {
+	public function get_format() {
 		return $this->format;
 	}
 
-	public function setLeagueId( $league_id ) {
+	public function set_league_id( $league_id ) {
 		$this->league_id = $league_id;
 	}
 
-	public function getLeagueId() {
+	public function get_league_id() {
 		return $this->league_id;
 	}
 
-	public function setStatus( $status ) {
+	public function set_status( $status ) {
 		$this->status = $status;
 	}
 
@@ -69,19 +84,19 @@ class Tournament extends Model
 		return $this->status;
 	}
 
-	public function setUrl( $url ) {
+	public function set_url( $url ) {
 		$this->url = $url;
 	}
 
-	public function getUrl() {
+	public function get_url() {
 		return $this->url;
 	}
 
-	public function getMatches() {
+	public function get_matches() {
 		return $this->matches;
 	}
 
-	public function setStandings( $standings ) {
+	public function set_standings( $standings ) {
 		$this->standings = $standings;
 	}
 
@@ -89,11 +104,11 @@ class Tournament extends Model
 		return $this->standings;
 	}
 
-	public function setXml( $xml ) {
+	public function set_xml( $xml ) {
 		$this->xml = $xml;
 	}
 
-	public function getXml() {
+	public function get_xml() {
 		return $this->xml;
 	}
 

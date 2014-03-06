@@ -16,8 +16,21 @@ class Tournaments extends Repository
         $this->columns = 'id, league_id, date, format, status, url, standings, xml';
     }
 
+	public function get_by_id( $id ) {
+		$result = parent::get_by_id( $id );
+		if(isset($result)) {
+			return Tournament::from_array( $id, $result );
+		} else {
+			return null;
+		}
+	}
+
     public function get_by_league( $id ) {
-        return parent::query( "WHERE league_id = $id" );
+		$result = array();
+		foreach ( parent::query( "WHERE league_id = $id" ) as $tournament ) {
+			array_push( $result, Tournament::from_array( $tournament['id'], $tournament ) );
+		}
+        return $result;
     }
 
     public function create_table() {
