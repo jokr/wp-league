@@ -5,8 +5,8 @@ abstract class Admin_Screen
 	protected $plugin;
 
 	public function __construct() {
-		add_action( 'admin_menu', array($this, 'add_admin_menu') );
-		add_action( 'admin_init', array($this, 'admin_init') );
+		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
 	}
 
 	public function admin_init() {
@@ -17,7 +17,7 @@ abstract class Admin_Screen
 	public abstract function add_admin_menu();
 
 	protected function current_action() {
-		if ( isset($_REQUEST['action']) && - 1 != $_REQUEST['action'] )
+		if ( isset( $_REQUEST['action'] ) && - 1 != $_REQUEST['action'] )
 			return $_REQUEST['action'];
 		return false;
 	}
@@ -33,7 +33,7 @@ abstract class Admin_Screen
 		wp_register_script(
 			'league-admin',
 			LEAGUE_PLUGIN_URL . 'js/league-admin.js',
-			array('jquery-ui-datepicker'),
+			array( 'jquery-ui-datepicker' ),
 			LEAGUE_PLUGIN_VERSION,
 			true
 		);
@@ -41,7 +41,7 @@ abstract class Admin_Screen
 		wp_register_script(
 			'tournament-admin',
 			LEAGUE_PLUGIN_URL . 'js/tournament-admin.js',
-			array('jquery-ui-datepicker', 'jquery-ui-timepicker'),
+			array( 'jquery-ui-datepicker', 'jquery-ui-timepicker' ),
 			LEAGUE_PLUGIN_VERSION,
 			true
 		);
@@ -49,7 +49,7 @@ abstract class Admin_Screen
 		wp_register_script(
 			'prize-control',
 			LEAGUE_PLUGIN_URL . 'js/prize-control.js',
-			array('jquery'),
+			array( 'jquery' ),
 			LEAGUE_PLUGIN_VERSION,
 			true
 		);
@@ -71,14 +71,14 @@ abstract class Admin_Screen
 		wp_register_style(
 			'league-admin',
 			LEAGUE_PLUGIN_URL . 'css/league-admin.css',
-			array('league-admin-jquery-ui'),
+			array( 'league-admin-jquery-ui' ),
 			LEAGUE_PLUGIN_VERSION
 		);
 
 		wp_register_style(
 			'tournament-admin',
 			LEAGUE_PLUGIN_URL . 'css/tournament-admin.css',
-			array('league-admin-jquery-ui', 'jquery-timepicker'),
+			array( 'league-admin-jquery-ui', 'jquery-timepicker' ),
 			LEAGUE_PLUGIN_VERSION
 		);
 	}

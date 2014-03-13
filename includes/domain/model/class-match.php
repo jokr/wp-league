@@ -15,7 +15,7 @@ class Match extends Model
 	protected $draws;
 
 	public function save() {
-        League_Plugin::get_instance()->get_matches()->save( $this );
+		League_Plugin::get_instance()->get_matches()->save( $this );
 	}
 
 	/**
@@ -145,6 +145,6 @@ class Match extends Model
 	}
 
 	public function has_opponent() {
-		return isset($this->opponent_id);
+		return isset( $this->opponent_id );
 	}
 }

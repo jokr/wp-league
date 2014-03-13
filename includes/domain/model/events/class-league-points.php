@@ -11,7 +11,7 @@ class League_Points extends League_Event
 	private $date;
 
 	public function __construct( Player $player, League $league, Tournament $tournament, $points, $winner, $date ) {
-		parent::__construct($player);
+		parent::__construct( $player );
 		$this->league = $league;
 		$this->tournament = $tournament;
 		$this->points = $points;
@@ -26,7 +26,7 @@ class League_Points extends League_Event
 	}
 
 	public function get_message() {
-		if($this->points > 1) {
+		if ( $this->points > 1 ) {
 			return __( sprintf( '%u league points awarded.', $this->points ), 'league' );
 		} else {
 			return __( sprintf( '%u league point awarded.', $this->points ), 'league' );

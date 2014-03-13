@@ -17,11 +17,11 @@
     set_total();
 
     $winner.change(function () {
-        if(this.checked) {
+        if (this.checked) {
             var c = this;
             var $current = $winner.filter(':checked');
-            $current.each(function(index, element) {
-                if(element != c) {
+            $current.each(function (index, element) {
+                if (element != c) {
                     element.checked = false;
                 }
             });

@@ -19,20 +19,20 @@ class Participated_Tournament extends League_Event
 		$this->league = $tournament->get_league();
 		$this->rank = $rank;
 		if ( $credits > 0 ) {
-			$this->credit_event = new Tournament_Credit_Points($player, $tournament, $credits);
+			$this->credit_event = new Tournament_Credit_Points( $player, $tournament, $credits );
 		}
 		if ( $points > 0 ) {
-			$this->points_event = new League_Points($player, $this->league, $tournament, $points, $winner, $this->get_date());
+			$this->points_event = new League_Points( $player, $this->league, $tournament, $points, $winner, $this->get_date() );
 		}
 	}
 
 	protected function _apply() {
 		$this->league->add_player_to_league( $this->player );
 
-		if ( isset($this->credit_event) ) {
+		if ( isset( $this->credit_event ) ) {
 			$this->credit_event->apply();
 		}
-		if ( isset($this->points_event) ) {
+		if ( isset( $this->points_event ) ) {
 			$this->points_event->apply();
 		}
 
@@ -66,11 +66,11 @@ class Participated_Tournament extends League_Event
 	}
 
 	public function get_params() {
-		$result = array('rank' => $this->rank);
-		if ( isset($this->credits) ) {
+		$result = array( 'rank' => $this->rank );
+		if ( isset( $this->credits ) ) {
 			$result['credits'] = $this->credits->get_id();
 		}
-		if ( isset($this->points) ) {
+		if ( isset( $this->points ) ) {
 			$result['points'] = $this->points->get_id();
 		}
 		return $result;

@@ -1,6 +1,6 @@
 <?php
-if (! current_user_can( 'publish_pages' )) {
-    wp_die( 'You do not have sufficient permissions to access this page.' );
+if ( ! current_user_can( 'publish_pages' ) ) {
+	wp_die( 'You do not have sufficient permissions to access this page.' );
 }
 
 include_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-players-list-table.php';
@@ -14,12 +14,12 @@ wp_enqueue_style( 'tournament-admin' );
 
 <div class="wrap nosubsub">
 
-    <h2><?php _e( 'Players', 'league' ) ?></h2>
+	<h2><?php _e( 'Players', 'league' ) ?></h2>
 
-    <div id="col-container">
-        <div class="col-wrap">
-            <?php $list_table->display(); ?>
-            <br class="clear"/>
-        </div>
-    </div>
+	<div id="col-container">
+		<div class="col-wrap">
+			<?php $list_table->display(); ?>
+			<br class="clear"/>
+		</div>
+	</div>
 </div>

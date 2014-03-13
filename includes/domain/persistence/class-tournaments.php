@@ -5,38 +5,38 @@ require_once dirname( __DIR__ ) . '/model/class-tournament.php';
 
 class Tournaments extends Repository
 {
-    public function __construct() {
-        parent::__construct();
+	public function __construct() {
+		parent::__construct();
 
-        global $wpdb;
+		global $wpdb;
 
-        $this->table = $wpdb->prefix . 'tournaments';
-        $wpdb->leagues = $this->table;
-        $this->sort = 'date';
-        $this->columns = 'id, league_id, date, format, status, url, standings, xml';
-    }
+		$this->table = $wpdb->prefix . 'tournaments';
+		$wpdb->leagues = $this->table;
+		$this->sort = 'date';
+		$this->columns = 'id, league_id, date, format, status, url, standings, xml';
+	}
 
 	public function get_by_id( $id ) {
 		$result = parent::get_by_id( $id );
-		if(isset($result)) {
+		if ( isset( $result ) ) {
 			return Tournament::from_array( $id, $result );
 		} else {
 			return null;
 		}
 	}
 
-    public function get_by_league( $id ) {
+	public function get_by_league( $id ) {
 		$result = array();
 		foreach ( parent::query( "WHERE league_id = $id" ) as $tournament ) {
 			array_push( $result, Tournament::from_array( $tournament['id'], $tournament ) );
 		}
-        return $result;
-    }
+		return $result;
+	}
 
-    public function create_table() {
-        global $wpdb;
+	public function create_table() {
+		global $wpdb;
 
-        $sql = "CREATE TABLE $wpdb->tournaments (
+		$sql = "CREATE TABLE $wpdb->tournaments (
 			id MEDIUMINT NOT NULL AUTO_INCREMENT,
 			created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			league_id MEDIUMINT NOT NULL,
@@ -54,7 +54,7 @@ class Tournaments extends Repository
 		)
 		DEFAULT COLLATE utf8_general_ci;";
 
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        dbdelta( $sql );
-    }
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbdelta( $sql );
+	}
 }

@@ -22,13 +22,13 @@ class Tournament extends Model
 		$this->standings = array();
 	}
 
-	public static function from_array($id, array $array) {
-		$result = new Tournament($array['league_id'], $array['date'], $array['format']);
-		$result->set_id($id);
-		$result->set_status($array['status']);
-		$result->set_url($array['url']);
-		$result->set_standings(unserialize($array['standings']));
-		$result->set_xml($array['xml']);
+	public static function from_array( $id, array $array ) {
+		$result = new Tournament( $array['league_id'], $array['date'], $array['format'] );
+		$result->set_id( $id );
+		$result->set_status( $array['status'] );
+		$result->set_url( $array['url'] );
+		$result->set_standings( unserialize( $array['standings'] ) );
+		$result->set_xml( $array['xml'] );
 		return $result;
 	}
 
@@ -40,13 +40,13 @@ class Tournament extends Model
 
 	public function get_vars() {
 		$result = parent::get_vars();
-		unset($result['matches']);
-		if ( isset($result['standings']) ) {
+		unset( $result['matches'] );
+		if ( isset( $result['standings'] ) ) {
 			$result['standings'] = serialize( $this->standings );
 		} else {
 			$result['standings'] = null;
 		}
-		if ( ! isset($result['xml']) ) {
+		if ( ! isset( $result['xml'] ) ) {
 			$result['xml'] = null;
 		}
 		return $result;
@@ -117,16 +117,16 @@ class Tournament extends Model
 	}
 
 	public function delete_results() {
-		$this->xml = NULL;
-		$this->standings = NULL;
-		$this->matches = NULL;
+		$this->xml = null;
+		$this->standings = null;
+		$this->matches = null;
 		$this->status = 'WAITING';
 	}
 
 	public function set_winner( $winner_id ) {
 		if ( $this->get_winner() != $winner_id ) {
 			$rank = $this->find_in_standings( $winner_id );
-			if ( isset($rank) ) {
+			if ( isset( $rank ) ) {
 				$tmp = $this->standings[$rank];
 				$this->standings[$rank] = $this->standings[1];
 				$this->standings[1] = $tmp;

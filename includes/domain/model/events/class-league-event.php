@@ -6,7 +6,7 @@ abstract class League_Event extends Model
 {
 	protected $player;
 
-	public function __construct(Player $player) {
+	public function __construct( Player $player ) {
 		$this->player = $player;
 	}
 
@@ -18,11 +18,11 @@ abstract class League_Event extends Model
 	protected abstract function _apply();
 
 	public function has_been_applied() {
-		return isset($this->id);
+		return isset( $this->id );
 	}
 
 	public function save() {
-        League_Plugin::get_instance()->get_events()->save($this);
+		League_Plugin::get_instance()->get_events()->save( $this );
 	}
 
 	public function get_vars() {
@@ -32,7 +32,7 @@ abstract class League_Event extends Model
 			'type' => $this->get_type(),
 			'player_id' => $this->get_player()->get_id(),
 			'message' => $this->get_message(),
-			'params' => serialize($this->get_params())
+			'params' => serialize( $this->get_params() )
 		);
 	}
 

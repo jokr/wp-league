@@ -33,7 +33,7 @@ class Leagues extends Repository
 		)
 		DEFAULT COLLATE utf8_general_ci;";
 
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbdelta( $sql );
 	}
 }

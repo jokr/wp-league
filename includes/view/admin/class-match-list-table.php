@@ -31,7 +31,7 @@ class Match_List_Table extends List_Table
 	}
 
 	protected function get_grouped_columns() {
-		return array('round');
+		return array( 'round' );
 	}
 
 	protected function sort() {
@@ -70,7 +70,7 @@ class Match_List_Table extends List_Table
 	}
 
 	private function get_player( $id ) {
-		if ( ! isset($player[$id]) ) {
+		if ( ! isset( $player[$id] ) ) {
 			$player = $this->players->get_by_id( $id );
 			$player = $player->getFirst() . ' ' . $player->getLast();
 			$this->playerCache[$id] = $player;

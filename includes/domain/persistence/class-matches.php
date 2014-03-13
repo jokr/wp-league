@@ -16,7 +16,7 @@ class Matches extends Repository
 	}
 
 	public function get_by_id( $id ) {
-		return new Match(parent::_get_by_id( $id ));
+		return new Match( parent::_get_by_id( $id ) );
 	}
 
 	public function get_all() {
@@ -56,14 +56,14 @@ class Matches extends Repository
 		)
 		DEFAULT COLLATE utf8_general_ci;";
 
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbdelta( $sql );
 	}
 
 	private function get_objects( array $matches ) {
 		$result = array();
 		foreach ( $matches as $id => $match ) {
-			$result[$id] = new Match($match);
+			$result[$id] = new Match( $match );
 		}
 		return $result;
 	}
@@ -72,12 +72,12 @@ class Matches extends Repository
 		global $wpdb;
 		$result = $wpdb->get_row( "SELECT id FROM $this->table WHERE tournament_id = $tournament_id
 		AND round = $round AND (player_id = $player_id OR opponent_id = $$player_id)" );
-		return ! empty($result);
+		return ! empty( $result );
 	}
 
 	public function delete_all_by_tournament( $tournamentId ) {
 		global $wpdb;
-		return $wpdb->delete( $this->table, array('tournament_id' => $tournamentId) );
+		return $wpdb->delete( $this->table, array( 'tournament_id' => $tournamentId ) );
 	}
 }
  

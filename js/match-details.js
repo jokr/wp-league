@@ -3,7 +3,7 @@
         $(element).show();
         $('#wrapper').before('<div id="dim"></div>');
 
-        $(element).click(function() {
+        $(element).click(function () {
             $('dialog').hide();
             $('#dim').remove();
         })
