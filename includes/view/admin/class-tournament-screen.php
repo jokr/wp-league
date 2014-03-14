@@ -9,12 +9,15 @@ class Tournament_Screen extends Admin_Screen
 	private $matches;
 	private $players;
 
-	public function __construct( Tournaments $tournaments, Leagues $leagues, Players $players, Matches $matches ) {
+	public function __construct(
+		League_service $leagues,
+		Tournament_Service $tournaments,
+		Player_Service $players
+	) {
 		parent::__construct();
 		$this->tournaments = $tournaments;
 		$this->leagues = $leagues;
 		$this->players = $players;
-		$this->matches = $matches;
 
 		add_action( 'admin_post_add_tournament', array( $this, 'add_tournament' ) );
 		add_action( 'admin_post_edit_tournament', array( $this, 'edit_tournament' ) );
@@ -41,7 +44,15 @@ class Tournament_Screen extends Admin_Screen
 				load_template( LEAGUE_PLUGIN_DIR . '/templates/tournament-edit.php' );
 				break;
 			default:
-				load_template( LEAGUE_PLUGIN_DIR . '/templates/tournament-admin.php' );
+				include_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-tournaments-list-table.php';
+
+				$list_table = new Tournaments_List_Table( $this->tournaments, $this->leagues );
+				$list_table->prepare_items();
+
+				wp_enqueue_script( 'tournament-admin' );
+				wp_enqueue_style( 'tournament-admin' );
+
+				include_once LEAGUE_PLUGIN_DIR . '/templates/tournament-admin.php';
 		}
 	}
 
@@ -60,14 +71,13 @@ class Tournament_Screen extends Admin_Screen
 			) {
 				wp_die( 'Invalid league id' );
 			}
-			$tournament = new Tournament( array(
-				'date' => sanitize_text_field( $tournament['date'] ),
-				'format' => sanitize_text_field( $tournament['format'] ),
-				'url' => sanitize_text_field( $tournament['url'] ),
-				'league_id' => $tournament['league_id']
-			) );
 
-			$this->tournaments->save( $tournament );
+			$this->tournaments->create(
+				sanitize_text_field( $tournament['league_id'] ),
+				sanitize_text_field( $tournament['date'] ),
+				sanitize_text_field( $tournament['format'] ),
+				sanitize_text_field( $tournament['url'] )
+			);
 		}
 
 		wp_redirect( add_query_arg( 'updated', 'true', admin_url( 'admin.php?page=tournaments' ) ) );
@@ -80,17 +90,18 @@ class Tournament_Screen extends Admin_Screen
 
 		check_admin_referer( 'edit-tournament', '_wpnonce_edit_tournament' );
 		if ( isset( $_POST['id'] ) && isset( $_POST['tournament'] ) ) {
-			$updated = $_POST['tournament'];
-			if ( isset( $updated['league_id'] ) &&
-				is_numeric( $updated['league_id'] ) &&
-				$this->leagues->exists( $updated['league_id'] )
+			$tournament = $_POST['tournament'];
+			if ( isset( $tournament['league_id'] ) &&
+				is_numeric( $tournament['league_id'] ) &&
+				$this->leagues->exists( $tournament['league_id'] )
 			) {
-				$tournament = $this->tournaments->get_by_id( $_POST['id'] );
-				$tournament->setLeagueId( $updated['league_id'] );
-				$tournament->setDate( sanitize_text_field( $updated['date'] ) );
-				$tournament->setFormat( sanitize_text_field( $updated['format'] ) );
-				$tournament->setUrl( sanitize_text_field( $updated['url'] ) );
-				$this->tournaments->save( $tournament );
+				$this->tournaments->update(
+					$_POST['id'],
+					$tournament['league_id'],
+					sanitize_text_field( $tournament['date'] ),
+					sanitize_text_field( $tournament['format'] ),
+					sanitize_text_field( $tournament['url'] )
+				);
 				wp_redirect( add_query_arg( 'updated', 'true', admin_url( 'admin.php?page=tournaments' ) ) );
 			} else {
 				wp_die( 'No valid league.' );
@@ -108,7 +119,7 @@ class Tournament_Screen extends Admin_Screen
 			is_numeric( $_POST['id'] )
 		) {
 			$tournament = $this->tournaments->get_by_id( $_POST['id'] );
-			if ( $currentFile = $tournament->getXml() ) {
+			if ( $currentFile = $tournament->get_xml() ) {
 				unlink( $currentFile );
 			}
 			$resultFile = $_FILES['results-file'];
@@ -133,7 +144,7 @@ class Tournament_Screen extends Admin_Screen
 		check_admin_referer( 'delete-results', '_wpnonce_delete_results' );
 		if ( isset( $_POST['id'] ) && is_numeric( $_POST['id'] ) && $this->tournaments->exists( $_POST['id'] ) ) {
 			$tournament = $this->tournaments->get_by_id( $_POST['id'] );
-			if ( $currentFile = $tournament->getXml() ) {
+			if ( $currentFile = $tournament->get_xml() ) {
 				unlink( $currentFile );
 			}
 			$tournament->delete_results();
@@ -182,7 +193,7 @@ class Tournament_Screen extends Admin_Screen
 				$event->apply();
 			}
 
-			$tournament->setStatus( 'CLOSED' );
+			$tournament->set_status( 'CLOSED' );
 			$tournament->save();
 
 			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(

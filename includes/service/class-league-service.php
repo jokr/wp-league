@@ -34,4 +34,8 @@ class League_Service
 	public function exists( $id ) {
 		return $this->leagues->exists( $id );
 	}
+
+	public function get_all_active() {
+		return $this->leagues->get_all_active();
+	}
 }

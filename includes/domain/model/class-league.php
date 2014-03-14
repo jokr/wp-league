@@ -18,6 +18,12 @@ class League extends Model
 		$this->tournaments = array();
 	}
 
+	public static function from_array( $id, array $array ) {
+		$result = new League( $array['name'], $array['start'], $array['end'], $array['standings'] );
+		$result->set_id( $id );
+		return $result;
+	}
+
 	public function get_vars() {
 		$result = parent::get_vars();
 		unset( $result['tournaments'] );
@@ -37,7 +43,7 @@ class League extends Model
 		$this->name = $name;
 	}
 
-	public function getName() {
+	public function get_name() {
 		return $this->name;
 	}
 

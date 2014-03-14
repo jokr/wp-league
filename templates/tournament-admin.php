@@ -5,13 +5,7 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 
 include_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-tournaments-list-table.php';
 
-$list_table = new Tournaments_List_Table( League_Plugin::get_instance()->get_tournaments(), League_Plugin::get_instance()->get_leagues() );
-$list_table->prepare_items();
-
-wp_enqueue_script( 'tournament-admin' );
-wp_enqueue_style( 'tournament-admin' );
-
-$leagues = League_Plugin::get_instance()->get_leagues()->get_all_active();
+$leagues = League_Plugin::get_instance()->get_active_leagues();
 
 ?>
 <div class="wrap nosubsub">
@@ -42,7 +36,7 @@ $leagues = League_Plugin::get_instance()->get_leagues()->get_all_active();
 							<select name="tournament[league_id]" id="tournament-league" required="required">
 								<?php foreach ( $leagues as $league ) : ?>
 									<option
-										value="<?php echo $league->get_id(); ?>"><?php echo $league->getName(); ?></option>
+										value="<?php echo $league->get_id(); ?>"><?php echo $league->get_name(); ?></option>
 								<?php endforeach; ?>
 							</select>
 

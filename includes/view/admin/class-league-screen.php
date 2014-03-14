@@ -15,7 +15,6 @@ class League_Screen extends Admin_Screen
 		$this->tournaments = $tournaments;
 
 		add_action( 'admin_post_add_league', array( $this, 'add_league' ) );
-		add_action( 'admin_post_delete_league', array( $this, 'delete_league' ) );
 		$this->slug = 'leagues';
 	}
 
@@ -34,6 +33,19 @@ class League_Screen extends Admin_Screen
 	}
 
 	public function load_league_menu() {
+		if ( ! current_user_can( 'publish_pages' ) ) {
+			wp_die( 'You do not have sufficient permissions to access this page.' );
+		}
+
+		switch ( $this->current_action() ) {
+			case 'delete':
+				check_admin_referer( 'delete_league', '_wpnonce' );
+				if ( isset( $_GET['id'] ) && is_numeric( $_GET['id'] ) ) {
+					$this->leagues->delete( $_GET['id'] );
+				}
+				wp_redirect( $this->get_url( array( 'deleted' => 'true' ) ) );
+		}
+
 		wp_enqueue_script( 'league-admin' );
 		wp_enqueue_style( 'league-admin' );
 		require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-leagues-list-table.php';
@@ -74,19 +86,6 @@ class League_Screen extends Admin_Screen
 		}
 
 		wp_redirect( add_query_arg( 'updated', 'true', admin_url( 'admin.php?page=leagues' ) ) );
-	}
-
-	public function delete_league() {
-		if ( ! current_user_can( 'publish_pages' ) ) {
-			wp_die( 'You do not have sufficient permissions to access this page.' );
-		}
-
-		check_admin_referer( 'delete_league', '_wpnonce' );
-
-		if ( isset( $_GET['id'] ) && is_numeric( $_GET['id'] ) ) {
-			$this->leagues->delete( $_POST['id'] );
-		}
-		wp_redirect( $this->get_url( array( 'deleted' => 'true' ) ) );
 	}
 
 	public function get_url( $query_arg ) {

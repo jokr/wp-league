@@ -11,6 +11,7 @@ require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-tournament-service.php'
 require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-player-service.php';
 
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-league-screen.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-tournament-screen.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/frontend/class-league-shortcode.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/class-league-signup-page.php';
 
@@ -55,6 +56,7 @@ class League_Plugin
 
 		if ( is_admin() ) {
 			new League_Screen( $this->league_service, $this->tournament_service );
+			new Tournament_Screen( $this->league_service, $this->tournament_service, $this->player_service );
 		} else {
 			add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
 			new League_Signup_Page( array(
@@ -117,5 +119,9 @@ class League_Plugin
 			echo "No tournament id sent or it is non numeric.";
 		}
 		die();
+	}
+
+	public function get_active_leagues() {
+		return $this->league_service->get_all_active();
 	}
 }

@@ -16,7 +16,11 @@ class Leagues extends Repository
 	}
 
 	public function get_all_active() {
-		return parent::query( "WHERE end >= CURDATE()" );
+		$result = array();
+		foreach ( parent::query( "WHERE end >= CURDATE()" ) as $league ) {
+			array_push($result, League::from_array($league['id'], $league));
+		}
+		return $result;
 	}
 
 	public function create_table() {
