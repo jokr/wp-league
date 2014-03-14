@@ -12,9 +12,9 @@ class Player extends Model
 
 	public static function from_array( $id, array $array ) {
 		$result = new Player( $array['first'], $array['last'], $array['dci'] );
-		$result->set_id( $id );
-		$result->set_credits( $array['credits'] );
-		$result->set_wp_user_id( $array['wp_user_id'] );
+		$result->set_id( (int) $id );
+		$result->set_credits( (int) $array['credits'] );
+		$result->set_wp_user_id( (int) $array['wp_user_id'] );
 		return $result;
 	}
 

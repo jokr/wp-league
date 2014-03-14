@@ -14,133 +14,141 @@ class Match extends Model
 	protected $losses;
 	protected $draws;
 
-	public function save() {
-		League_Plugin::get_instance()->get_matches()->save( $this );
+	public function __construct( $tournament_id, $round, $date, $player_id, $opponent_id, $outcome, $wins, $losses, $draws ) {
+		$this->tournament_id = $tournament_id;
+		$this->round = $round;
+		$this->date = $date;
+		$this->player_id = $player_id;
+		$this->opponent_id = $opponent_id;
+		$this->outcome = $outcome;
+		$this->wins = $wins;
+		$this->losses = $losses;
+		$this->draws = $draws;
 	}
 
 	/**
 	 * @param mixed $round
 	 */
-	public function setRound( $round ) {
+	public function set_round( $round ) {
 		$this->round = $round;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getRound() {
+	public function get_round() {
 		return $this->round;
 	}
 
 	/**
 	 * @param mixed $date
 	 */
-	public function setDate( $date ) {
+	public function set_date( $date ) {
 		$this->date = $date;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getDate() {
+	public function get_date() {
 		return $this->date;
 	}
 
 	/**
 	 * @param mixed $draws
 	 */
-	public function setDraws( $draws ) {
+	public function set_draws( $draws ) {
 		$this->draws = $draws;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getDraws() {
+	public function get_draws() {
 		return $this->draws;
 	}
 
 	/**
 	 * @param mixed $losses
 	 */
-	public function setLosses( $losses ) {
+	public function set_losses( $losses ) {
 		$this->losses = $losses;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getLosses() {
+	public function get_losses() {
 		return $this->losses;
 	}
 
 	/**
 	 * @param mixed $opponent_id
 	 */
-	public function setOpponentId( $opponent_id ) {
+	public function set_opponent_id( $opponent_id ) {
 		$this->opponent_id = $opponent_id;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getOpponentId() {
+	public function get_opponent_id() {
 		return $this->opponent_id;
 	}
 
 	/**
 	 * @param mixed $outcome
 	 */
-	public function setOutcome( $outcome ) {
+	public function set_outcome( $outcome ) {
 		$this->outcome = $outcome;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getOutcome() {
+	public function get_outcome() {
 		return $this->outcome;
 	}
 
 	/**
 	 * @param mixed $player_id
 	 */
-	public function setPlayerId( $player_id ) {
+	public function set_player_id( $player_id ) {
 		$this->player_id = $player_id;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getPlayerId() {
+	public function get_player_id() {
 		return $this->player_id;
 	}
 
 	/**
 	 * @param mixed $tournament_id
 	 */
-	public function setTournamentId( $tournament_id ) {
+	public function set_tournament_id( $tournament_id ) {
 		$this->tournament_id = $tournament_id;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getTournamentId() {
+	public function get_tournament_id() {
 		return $this->tournament_id;
 	}
 
 	/**
 	 * @param mixed $wins
 	 */
-	public function setWins( $wins ) {
+	public function set_wins( $wins ) {
 		$this->wins = $wins;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getWins() {
+	public function ge_wWins() {
 		return $this->wins;
 	}
 

@@ -71,7 +71,7 @@ class Matches extends Repository
 	public function exists_in_tournament( $tournament_id, $round, $player_id ) {
 		global $wpdb;
 		$result = $wpdb->get_row( "SELECT id FROM $this->table WHERE tournament_id = $tournament_id
-		AND round = $round AND (player_id = $player_id OR opponent_id = $$player_id)" );
+		AND round = $round AND (player_id = $player_id OR opponent_id = $player_id)" );
 		return ! empty( $result );
 	}
 

@@ -20,15 +20,19 @@ class Players extends Repository
 	}
 
 	public function get_all() {
-		return $this->get_objects( parent::_get_all() );
+		$result = array();
+		foreach(parent::get_all() as $player) {
+			array_push($result, Player::from_array($player['id'], $player));
+		}
+		return $result;
 	}
 
 	public function find_by_dci( $dci ) {
-		$result = $this->get_objects( parent::_query( "WHERE dci = $dci" ) );
+		$result = parent::query( "WHERE dci = $dci" );
 		if ( empty( $result ) ) {
 			return null;
 		} else {
-			return $result[0];
+			return Player::from_array( $result[0]['id'], $result[0] );
 		}
 	}
 

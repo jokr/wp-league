@@ -9,9 +9,11 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 wp_enqueue_script( 'tournament-admin' );
 wp_enqueue_style( 'tournament-admin' );
 
-$tournament = League_Plugin::get_instance()->get_tournaments()->get_by_id( (int)$_REQUEST['id'] );
+$screen = Tournament_Screen::get_instance();
 
-$leagues = League_Plugin::get_instance()->get_leagues()->get_all();
+$tournament = $screen->get_tournament( (int)$_REQUEST['id'] );
+
+$leagues = $screen->get_leagues();
 
 $disabled = in_array( $tournament->get_status(), array( 'FINISHED', 'CLOSED' ) );
 
@@ -35,8 +37,8 @@ $disabled = in_array( $tournament->get_status(), array( 'FINISHED', 'CLOSED' ) )
 						<?php foreach ( $leagues as $league ) : ?>
 							<option
 								value="<?php echo $league->get_id(); ?>"
-								<?php selected( $league->get_id(), $tournament->getLeagueId() ) ?>>
-								<?php echo $league->getName(); ?></option>
+								<?php selected( $league->get_id(), $tournament->get_league_id() ) ?>>
+								<?php echo $league->get_name(); ?></option>
 						<?php endforeach; ?>
 					</select>
 
@@ -45,12 +47,12 @@ $disabled = in_array( $tournament->get_status(), array( 'FINISHED', 'CLOSED' ) )
 			</tr>
 			<tr class="form-field form-required">
 				<input id="tournament-date-field" type="hidden" name="tournament[date]"
-					   value="<?php echo $tournament->getDate() ?>"/>
+					   value="<?php echo $tournament->get_date() ?>"/>
 				<th scope="row"><label for="tournament-date"><?php _e( 'Date and Time', 'league' ); ?></label></th>
 				<td>
 					<?php
-					$date = date( 'Y-m-d', strtotime( $tournament->getDate() ) );
-					$time = date( 'H:i', strtotime( $tournament->getDate() ) );
+					$date = date( 'Y-m-d', strtotime( $tournament->get_date() ) );
+					$time = date( 'H:i', strtotime( $tournament->get_date() ) );
 					?>
 					<div class="datetime date"><input id="tournament-date" class="datepicker" type="text"
 													  value="<?php echo $date ?>" <?php disabled( $disabled ) ?>
@@ -65,13 +67,13 @@ $disabled = in_array( $tournament->get_status(), array( 'FINISHED', 'CLOSED' ) )
 			<tr class="form-field form-required">
 				<th scope="row"><label for="tournament-format"><?php _e( 'Format', 'league' ); ?></label></th>
 				<td><input name="tournament[format]" id="tournament-format" type="text"
-						   value="<?php echo $tournament->getFormat(); ?>"
+						   value="<?php echo $tournament->get_format(); ?>"
 						   size="40" required="required" <?php disabled( $disabled ) ?>/></td>
 			</tr>
 			<tr class="form-field">
 				<th scope="row"><label for="tournament-url"><?php _e( 'Url', 'league' ); ?></label></th>
 				<td><input name="tournament[url]" id="tournament-url" type="url"
-						   value="<?php echo $tournament->getUrl(); ?>"
+						   value="<?php echo $tournament->get_url(); ?>"
 						   size="40" <?php disabled( $disabled ) ?>/></td>
 			</tr>
 		</table>

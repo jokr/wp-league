@@ -48,7 +48,7 @@ class League_Plugin
 		$this->events = new League_Events();
 
 		$this->league_service = new League_Service( $this->leagues, $this->tournaments );
-		$this->tournament_service = new Tournament_Service( $this->tournaments );
+		$this->tournament_service = new Tournament_Service( $this->tournaments, $this->players, $this->matches );
 		$this->player_service = new Player_Service( $this->players );
 
 		// Register activation and deactivation
@@ -56,7 +56,7 @@ class League_Plugin
 
 		if ( is_admin() ) {
 			new League_Screen( $this->league_service, $this->tournament_service );
-			new Tournament_Screen( $this->league_service, $this->tournament_service, $this->player_service );
+			Tournament_Screen::get_instance( $this->league_service, $this->tournament_service, $this->player_service );
 		} else {
 			add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
 			new League_Signup_Page( array(

@@ -15,10 +15,18 @@ class Leagues extends Repository
 		$this->sort = 'start';
 	}
 
+	public function get_all() {
+		$result = array();
+		foreach ( parent::get_all() as $league ) {
+			array_push( $result, League::from_array( $league['id'], $league ) );
+		}
+		return $result;
+	}
+
 	public function get_all_active() {
 		$result = array();
 		foreach ( parent::query( "WHERE end >= CURDATE()" ) as $league ) {
-			array_push($result, League::from_array($league['id'], $league));
+			array_push( $result, League::from_array( $league['id'], $league ) );
 		}
 		return $result;
 	}

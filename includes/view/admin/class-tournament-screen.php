@@ -4,12 +4,23 @@ require_once dirname( __FILE__ ) . '/class-admin-screen.php';
 
 class Tournament_Screen extends Admin_Screen
 {
+	private static $instance;
+
 	private $tournaments;
 	private $leagues;
 	private $matches;
 	private $players;
 
-	public function __construct(
+	public static function get_instance( League_service $leagues = null,
+										 Tournament_Service $tournaments = null,
+										 Player_Service $players = null ) {
+		if ( null == self::$instance ) {
+			self::$instance = new Tournament_Screen( $leagues, $tournaments, $players );
+		}
+		return self::$instance;
+	}
+
+	protected function __construct(
 		League_service $leagues,
 		Tournament_Service $tournaments,
 		Player_Service $players
@@ -114,6 +125,9 @@ class Tournament_Screen extends Admin_Screen
 
 	public function upload_results() {
 		check_admin_referer( 'upload-results', '_wpnonce_upload_results' );
+
+		require_once LEAGUE_PLUGIN_DIR . 'includes/class-wer-result-handler.php';
+
 		if ( isset( $_FILES['results-file'] ) &&
 			isset( $_POST['id'] ) &&
 			is_numeric( $_POST['id'] )
@@ -125,8 +139,14 @@ class Tournament_Screen extends Admin_Screen
 			$resultFile = $_FILES['results-file'];
 			$file = wp_handle_upload( $resultFile, array( 'test_form' => false ) );
 			$xml = simplexml_load_file( $file['file'] );
-			$importer = new WER_Result_Handler( $file['file'], $xml, $tournament );
-			$importer->save_results( $this->players, $this->matches );
+			$importer = new WER_Result_Handler( $file['file'], $xml );
+
+			$this->tournaments->save_results(
+				$_POST['id'],
+				$importer->get_standings(),
+				$importer->get_matches(),
+				$file['file']
+			);
 
 			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(
 					'page' => 'tournaments',
@@ -211,5 +231,13 @@ class Tournament_Screen extends Admin_Screen
 	public function add_custom_upload_mimes( $existing_mimes ) {
 		$existing_mimes['xml'] = 'application/atom+xml';
 		return $existing_mimes;
+	}
+
+	public function get_tournament( $id ) {
+		return $this->tournaments->get_by_id( $id );
+	}
+
+	public function get_leagues() {
+		return $this->leagues->get_all();
 	}
 }
