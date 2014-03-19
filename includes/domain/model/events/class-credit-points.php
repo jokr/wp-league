@@ -16,7 +16,6 @@ class Credit_Points extends League_Event
 
 	protected function _apply() {
 		$this->player->award_credits( $this->credits );
-		$this->player->save();
 	}
 
 	function get_message() {

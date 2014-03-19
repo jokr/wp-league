@@ -92,6 +92,10 @@ class Tournament extends Model
 		return $this->url;
 	}
 
+	public function set_matches(array $matches) {
+		$this->matches = $matches;
+	}
+
 	public function get_matches() {
 		return $this->matches;
 	}
@@ -110,10 +114,6 @@ class Tournament extends Model
 
 	public function get_xml() {
 		return $this->xml;
-	}
-
-	public function get_league() {
-		return League_Plugin::get_instance()->get_leagues()->get_by_id( $this->getLeagueId() );
 	}
 
 	public function delete_results() {

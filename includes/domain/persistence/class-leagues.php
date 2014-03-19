@@ -15,6 +15,10 @@ class Leagues extends Repository
 		$this->sort = 'start';
 	}
 
+	public function get_by_id( $id ) {
+		return League::from_array( $id, parent::get_by_id( $id ) );
+	}
+
 	public function get_all() {
 		$result = array();
 		foreach ( parent::get_all() as $league ) {

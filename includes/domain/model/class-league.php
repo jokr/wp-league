@@ -19,7 +19,7 @@ class League extends Model
 	}
 
 	public static function from_array( $id, array $array ) {
-		$result = new League( $array['name'], $array['start'], $array['end'], $array['standings'] );
+		$result = new League( $array['name'], $array['start'], $array['end'], unserialize($array['standings']) );
 		$result->set_id( $id );
 		return $result;
 	}
@@ -51,7 +51,7 @@ class League extends Model
 		$this->start = $start;
 	}
 
-	public function getStart() {
+	public function get_start() {
 		return $this->start;
 	}
 

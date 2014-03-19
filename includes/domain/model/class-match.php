@@ -14,16 +14,30 @@ class Match extends Model
 	protected $losses;
 	protected $draws;
 
-	public function __construct( $tournament_id, $round, $date, $player_id, $opponent_id, $outcome, $wins, $losses, $draws ) {
+	public function __construct( $tournament_id, $round, $date, $player_id, $outcome ) {
 		$this->tournament_id = $tournament_id;
 		$this->round = $round;
 		$this->date = $date;
 		$this->player_id = $player_id;
-		$this->opponent_id = $opponent_id;
 		$this->outcome = $outcome;
-		$this->wins = $wins;
-		$this->losses = $losses;
-		$this->draws = $draws;
+	}
+
+	public static function from_array( $id, array $array ) {
+		$result = new Match( $array['tournament_id'], $array['round'], $array['date'], $array['player_id'], $array['outcome'] );
+		$result->set_id( $id );
+		if ( isset( $array['opponent_id'] ) ) {
+			$result->set_opponent_id( $array['opponent_id'] );
+		}
+		if ( isset( $array['wins'] ) ) {
+			$result->set_wins( $array['wins'] );
+		}
+		if ( isset( $array['losses'] ) ) {
+			$result->set_losses( $array['losses'] );
+		}
+		if ( isset( $array['draws'] ) ) {
+			$result->set_draws( $array['draws'] );
+		}
+		return $result;
 	}
 
 	/**
@@ -52,6 +66,20 @@ class Match extends Model
 	 */
 	public function get_date() {
 		return $this->date;
+	}
+
+	/**
+	 * @param mixed $wins
+	 */
+	public function set_wins( $wins ) {
+		$this->wins = $wins;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function get_wins() {
+		return $this->wins;
 	}
 
 	/**
@@ -136,20 +164,6 @@ class Match extends Model
 	 */
 	public function get_tournament_id() {
 		return $this->tournament_id;
-	}
-
-	/**
-	 * @param mixed $wins
-	 */
-	public function set_wins( $wins ) {
-		$this->wins = $wins;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function ge_wWins() {
-		return $this->wins;
 	}
 
 	public function has_opponent() {

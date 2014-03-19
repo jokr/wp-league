@@ -33,22 +33,22 @@ class Leagues_List_Table extends List_Table
 		);
 	}
 
-	function column_name( $league ) {
-		return $league['name'] . parent::row_actions(
-			$this->screen->get_edit_url( $league['id'] ),
-			$this->screen->get_delete_url( $league['id'] )
+	function column_name( League $league ) {
+		return $league->get_name() . parent::row_actions(
+			$this->screen->get_edit_url( $league->get_id() ),
+			$this->screen->get_delete_url( $league->get_id() )
 		);
 	}
 
-	function column_start( $league ) {
-		return date_i18n( get_option( 'date_format' ), strtotime( $league['start'] ) );
+	function column_start( League $league ) {
+		return date_i18n( get_option( 'date_format' ), strtotime( $league->get_start() ) );
 	}
 
-	function column_end( $league ) {
-		return date_i18n( get_option( 'date_format' ), strtotime( $league['end'] ) );
+	function column_end( League $league ) {
+		return date_i18n( get_option( 'date_format' ), strtotime( $league->get_end() ) );
 	}
 
-	function column_tournaments( $league ) {
-		return $this->screen->get_tournament_count( $league['id'] );
+	function column_tournaments( League $league ) {
+		return $this->screen->get_tournament_count( $league->get_id() );
 	}
 }

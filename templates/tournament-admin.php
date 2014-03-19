@@ -5,7 +5,11 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 
 include_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-tournaments-list-table.php';
 
-$leagues = League_Plugin::get_instance()->get_active_leagues();
+$screen = Tournament_Screen::get_instance();
+$leagues = $screen->get_leagues()->get_all_active();
+
+$list_table = new Tournaments_List_Table( $screen->get_tournaments(), $screen->get_leagues() );
+$list_table->prepare_items();
 
 ?>
 <div class="wrap nosubsub">

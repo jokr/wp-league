@@ -16,9 +16,7 @@ class League_Service
 	}
 
 	public function get_by_id( $id ) {
-		$array = $this->leagues->get_by_id( $id );
-		$result = new League( $array['name'], $array['start'], $array['end'], unserialize( $array['standings'] ) );
-		$result->set_id( $id );
+		$result = $this->leagues->get_by_id( $id );
 		$result->set_tournaments( $this->tournaments->get_by_league( $id ) );
 		return $result;
 	}

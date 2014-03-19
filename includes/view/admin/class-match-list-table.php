@@ -5,19 +5,17 @@ require_once LEAGUE_PLUGIN_DIR . 'includes/view/class-list-table.php';
 class Match_List_Table extends List_Table
 {
 	private $tournament;
-	private $matches;
 	private $players;
 	private $playerCache;
 
-	public function __construct( Tournament $tournament ) {
+	public function __construct( Tournament $tournament, Player_Service $players ) {
 		$this->tournament = $tournament;
-		$this->matches = $tournament->getMatches();
-		$this->players = League_Plugin::get_instance()->get_players();
+		$this->players = $players;
 		$this->playerCache = array();
 	}
 
 	protected function get_items() {
-		return $this->matches;
+		return $this->tournament->get_matches();
 	}
 
 	protected function get_all_columns() {
@@ -36,7 +34,7 @@ class Match_List_Table extends List_Table
 
 	protected function sort() {
 		usort( $this->items, function ( Match $a, Match $b ) {
-			return $a->getRound() - $b->getRound();
+			return $a->get_round() - $b->get_round();
 		} );
 	}
 
@@ -72,7 +70,7 @@ class Match_List_Table extends List_Table
 	private function get_player( $id ) {
 		if ( ! isset( $player[$id] ) ) {
 			$player = $this->players->get_by_id( $id );
-			$player = $player->getFirst() . ' ' . $player->getLast();
+			$player = $player->get_full_name();
 			$this->playerCache[$id] = $player;
 		} else {
 			$player = $this->playerCache[$id];
@@ -82,28 +80,28 @@ class Match_List_Table extends List_Table
 	}
 
 	protected function column_player( Match $match ) {
-		return $this->get_player( $match->getPlayerId() );
+		return $this->get_player( $match->get_player_id() );
 	}
 
 	protected function column_opponent( Match $match ) {
 		if ( $match->has_opponent() ) {
-			return $this->get_player( $match->getOpponentId() );
+			return $this->get_player( $match->get_opponent_id() );
 		} else {
 			return '';
 		}
 	}
 
 	protected function column_result( Match $match ) {
-		if ( 3 == $match->getOutcome() ) {
+		if ( 3 == $match->get_outcome() ) {
 			return __( 'Bye', 'league' );
-		} elseif ( 5 == $match->getOutcome() ) {
+		} elseif ( 5 == $match->get_outcome() ) {
 			return __( 'Match Loss', 'league' );
 		} else {
-			return $match->getWins() . ' - ' . $match->getLosses() . ' - ' . $match->getDraws();
+			return $match->get_wins() . ' - ' . $match->get_losses() . ' - ' . $match->get_draws();
 		}
 	}
 
 	protected function column_round( Match $match ) {
-		return __( 'Round', 'league' ) . ' ' . $match->getRound();
+		return __( 'Round', 'league' ) . ' ' . $match->get_round();
 	}
 }

@@ -9,11 +9,10 @@ class Standings_List_Table extends List_Table
 	private $rules;
 	private $events;
 
-	public function __construct( Tournament $tournament, League_Rules $rules ) {
+	public function __construct( Tournament $tournament, League_Rules $rules, Player_service $players ) {
 		$this->tournament = $tournament;
-		$this->players = League_Plugin::get_instance()->get_players();
 		$this->rules = $rules;
-		$this->events = League_Plugin::get_instance()->get_events();
+		$this->players = $players;
 		wp_enqueue_script( 'prize-control' );
 	}
 
@@ -44,16 +43,20 @@ class Standings_List_Table extends List_Table
 		return array( 'player_id' );
 	}
 
-	protected function display_top_tablenav() {
+	protected function get_top_tablenav() {
 		if ( $this->is_open() ) {
-			submit_button( __( 'Save All', 'league' ), 'primary', 'submit', false );
-			printf( '<input type="button" class="button reset-league-points" value="%s" />', __( 'Reset', 'league' ) );
-			printf( '<span class="control-values">%s%s%s</span>',
-				$this->disabled_number_input( __( 'Players', 'league' ), 'players', count( $this->items ) ),
-				$this->disabled_number_input( __( 'Recommended Prize Pool', 'league' ), 'rec-pool',
-					$this->rules->get_recommended_prize_pool() ),
-				$this->disabled_number_input( __( 'Current Prize Pool', 'league' ), 'cur-pool', count( $this->items ) )
+			return sprintf('%s%s%s',
+				get_submit_button( __( 'Save All', 'league' ), 'primary', 'submit', false ),
+				sprintf( '<input type="button" class="button reset-league-points" value="%s" />', __( 'Reset', 'league' ) ),
+				sprintf( '<span class="control-values">%s%s%s</span>',
+					$this->disabled_number_input( __( 'Players', 'league' ), 'players', count( $this->items ) ),
+					$this->disabled_number_input( __( 'Recommended Prize Pool', 'league' ), 'rec-pool',
+						$this->rules->get_recommended_prize_pool() ),
+					$this->disabled_number_input( __( 'Current Prize Pool', 'league' ), 'cur-pool', count( $this->items ) )
+				)
 			);
+		} else {
+			return '';
 		}
 	}
 
@@ -71,7 +74,7 @@ class Standings_List_Table extends List_Table
 
 	protected function column_name( array $standing ) {
 		$player = $this->players->get_by_id( $standing['player'] );
-		return $player->getFirst() . ' ' . $player->getLast();
+		return $player->get_full_name();
 	}
 
 	protected function column_credit_points( array $standing ) {

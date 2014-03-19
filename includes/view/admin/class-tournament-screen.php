@@ -55,15 +55,7 @@ class Tournament_Screen extends Admin_Screen
 				load_template( LEAGUE_PLUGIN_DIR . '/templates/tournament-edit.php' );
 				break;
 			default:
-				include_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-tournaments-list-table.php';
-
-				$list_table = new Tournaments_List_Table( $this->tournaments, $this->leagues );
-				$list_table->prepare_items();
-
-				wp_enqueue_script( 'tournament-admin' );
-				wp_enqueue_style( 'tournament-admin' );
-
-				include_once LEAGUE_PLUGIN_DIR . '/templates/tournament-admin.php';
+				load_template( LEAGUE_PLUGIN_DIR . '/templates/tournament-admin.php');
 		}
 	}
 
@@ -200,27 +192,12 @@ class Tournament_Screen extends Admin_Screen
 		) {
 			require_once LEAGUE_PLUGIN_DIR . 'includes/domain/model/events/class-participated-tournament.php';
 
-			$tournament = $this->tournaments->get_by_id( $_POST['id'] );
-			foreach ( $_POST['players'] as $id => $player ) {
-				$event = new Participated_Tournament(
-					$this->players->get_by_id( $id ),
-					$tournament,
-					$player['rank'],
-					isset( $player['winner'] ),
-					$player['league'],
-					$player['credits']
-				);
-				$event->apply();
-			}
-
-			$tournament->set_status( 'CLOSED' );
-			$tournament->save();
-
+			$this->tournaments->save_points($_POST['id'], $_POST['players'] );
 			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(
 					'page' => 'tournaments',
 					'updated' => 'true',
 					'action' => 'edit',
-					'id' => $tournament->get_id()
+					'id' => $_POST['id']
 				) )
 			) );
 		} else {
@@ -233,11 +210,15 @@ class Tournament_Screen extends Admin_Screen
 		return $existing_mimes;
 	}
 
-	public function get_tournament( $id ) {
-		return $this->tournaments->get_by_id( $id );
+	public function get_leagues() {
+		return $this->leagues;
 	}
 
-	public function get_leagues() {
-		return $this->leagues->get_all();
+	public function get_tournaments() {
+		return $this->tournaments;
+	}
+
+	public function get_players() {
+		return $this->players;
 	}
 }

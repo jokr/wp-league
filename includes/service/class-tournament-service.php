@@ -5,11 +5,14 @@ class Tournament_Service
 	private $tournaments;
 	private $players;
 	private $matches;
+	private $events;
 
-	public function __construct( Tournaments $tournaments, Players $players, Matches $matches ) {
+	public function __construct( Leagues $leagues, Tournaments $tournaments, Players $players, Matches $matches, League_Events $events ) {
+		$this->leagues = $leagues;
 		$this->tournaments = $tournaments;
 		$this->players = $players;
 		$this->matches = $matches;
+		$this->events = $events;
 	}
 
 	public function get_all() {
@@ -17,7 +20,11 @@ class Tournament_Service
 	}
 
 	public function get_by_id( $id ) {
-		return $this->tournaments->get_by_id( $id );
+		$tournament = $this->tournaments->get_by_id( $id );
+		if ( $tournament->get_status() != 'OPEN' ) {
+			$tournament->set_matches( $this->matches->get_all_by_tournament( $id ) );
+		}
+		return $tournament;
 	}
 
 	public function get_all_for_league( $id ) {
@@ -78,11 +85,11 @@ class Tournament_Service
 					$match['round'],
 					$match['date'],
 					$match['player_id'],
-					isset($match['opponent_id']) ? $match['opponent_id'] : null,
+					isset( $match['opponent_id'] ) ? $match['opponent_id'] : null,
 					$match['outcome'],
-					isset($match['wins']) ? $match['wins'] : null,
-					isset($match['losses']) ? $match['losses'] : null,
-					isset($match['draws']) ? $match['draws'] : null
+					isset( $match['wins'] ) ? $match['wins'] : null,
+					isset( $match['losses'] ) ? $match['losses'] : null,
+					isset( $match['draws'] ) ? $match['draws'] : null
 				) );
 			}
 		}
@@ -95,8 +102,39 @@ class Tournament_Service
 			);
 		}
 
-		$tournament = $this->tournaments->get_by_id($id);
-		$tournament->add_results($xml, $abbr_results);
-		$this->tournaments->save($tournament);
+		$tournament = $this->tournaments->get_by_id( $id );
+		$tournament->add_results( $xml, $abbr_results );
+		$this->tournaments->save( $tournament );
+	}
+
+	public function save_points( $id, $standings ) {
+		if ( $tournament = $this->tournaments->get_by_id( $id ) ) {
+			$league = $this->leagues->get_by_id( $tournament->get_league_id() );
+			foreach ( $standings as $id => $standing ) {
+				$player = $this->players->get_by_id( $id );
+
+				$event = new Participated_Tournament(
+					$player,
+					$league,
+					$tournament,
+					$standing['rank'],
+					isset( $standing['winner'] ),
+					$standing['league'],
+					$standing['credits']
+				);
+				$event->apply();
+				if ( $standing['credits'] > 0 ) {
+					$this->events->save( $event->get_credit_event() );
+				}
+				if ( $standing['league'] > 0 ) {
+					$this->events->save( $event->get_points_event() );
+				}
+				$this->events->save( $event );
+				$this->players->save( $player );
+			}
+			$tournament->set_status( 'CLOSED' );
+			$this->leagues->save( $league );
+			$this->tournaments->save( $tournament );
+		}
 	}
 }

@@ -16,15 +16,28 @@ class Matches extends Repository
 	}
 
 	public function get_by_id( $id ) {
-		return new Match( parent::_get_by_id( $id ) );
+		$result = parent::get_by_id( $id );
+		if ( isset( $result ) ) {
+			return Match::from_array( $id, $result );
+		} else {
+			return null;
+		}
 	}
 
 	public function get_all() {
-		return $this->get_objects( parent::_get_all() );
+		$result = array();
+		foreach ( parent::get_all() as $match ) {
+			array_push( $result, Match::from_array( $match['id'], $match ) );
+		}
+		return $result;
 	}
 
 	public function get_all_by_tournament( $id ) {
-		return $this->get_objects( parent::_query( "WHERE tournament_id = $id" ) );
+		$result = array();
+		foreach ( parent::query( "WHERE tournament_id = $id" ) as $match ) {
+			array_push( $result, Match::from_array( $match['id'], $match ) );
+		}
+		return $result;
 	}
 
 	public function create_table() {
@@ -58,14 +71,6 @@ class Matches extends Repository
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbdelta( $sql );
-	}
-
-	private function get_objects( array $matches ) {
-		$result = array();
-		foreach ( $matches as $id => $match ) {
-			$result[$id] = new Match( $match );
-		}
-		return $result;
 	}
 
 	public function exists_in_tournament( $tournament_id, $round, $player_id ) {

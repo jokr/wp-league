@@ -13,10 +13,10 @@ class Participated_Tournament extends League_Event
 	private $credit_event;
 	private $points_event;
 
-	public function __construct( Player $player, Tournament $tournament, $rank, $winner, $points, $credits ) {
+	public function __construct( Player $player, League $league, Tournament $tournament, $rank, $winner, $points, $credits ) {
 		parent::__construct( $player );
+		$this->league = $league;
 		$this->tournament = $tournament;
-		$this->league = $tournament->get_league();
 		$this->rank = $rank;
 		if ( $credits > 0 ) {
 			$this->credit_event = new Tournament_Credit_Points( $player, $tournament, $credits );
@@ -27,7 +27,7 @@ class Participated_Tournament extends League_Event
 	}
 
 	protected function _apply() {
-		$this->league->add_player_to_league( $this->player );
+		$this->league->add_player( $this->player->get_id() );
 
 		if ( isset( $this->credit_event ) ) {
 			$this->credit_event->apply();
@@ -39,8 +39,6 @@ class Participated_Tournament extends League_Event
 		if ( $this->winner ) {
 			$this->tournament->set_winner( $this->player->get_id() );
 		}
-
-		$this->league->save();
 	}
 
 	public function get_message() {
@@ -51,7 +49,7 @@ class Participated_Tournament extends League_Event
 	}
 
 	public function get_date() {
-		return $this->tournament->getDate();
+		return $this->tournament->get_date();
 	}
 
 	public function get_type() {
@@ -75,4 +73,14 @@ class Participated_Tournament extends League_Event
 		}
 		return $result;
 	}
+
+	public function get_points_event() {
+		return $this->points_event;
+	}
+
+	public function get_credit_event() {
+		return $this->credit_event;
+	}
+
+
 }

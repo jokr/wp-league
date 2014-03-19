@@ -12,17 +12,12 @@ abstract class League_Event extends Model
 
 	public final function apply() {
 		$this->_apply();
-		$this->save();
 	}
 
 	protected abstract function _apply();
 
 	public function has_been_applied() {
 		return isset( $this->id );
-	}
-
-	public function save() {
-		League_Plugin::get_instance()->get_events()->save( $this );
 	}
 
 	public function get_vars() {

@@ -48,7 +48,9 @@ class League_Plugin
 		$this->events = new League_Events();
 
 		$this->league_service = new League_Service( $this->leagues, $this->tournaments );
-		$this->tournament_service = new Tournament_Service( $this->tournaments, $this->players, $this->matches );
+		$this->tournament_service = new Tournament_Service(
+			$this->leagues, $this->tournaments, $this->players, $this->matches, $this->events
+		);
 		$this->player_service = new Player_Service( $this->players );
 
 		// Register activation and deactivation
@@ -119,9 +121,5 @@ class League_Plugin
 			echo "No tournament id sent or it is non numeric.";
 		}
 		die();
-	}
-
-	public function get_active_leagues() {
-		return $this->league_service->get_all_active();
 	}
 }

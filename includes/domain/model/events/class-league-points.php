@@ -21,7 +21,7 @@ class League_Points extends League_Event
 
 	protected function _apply() {
 		if ( $this->points > 0 ) {
-			$this->league->award_league_points( $this->get_player(), $this->points, $this->winner );
+			$this->league->add_league_points( $this->get_player()->get_id(), $this->points, $this->winner );
 		}
 	}
 
