@@ -80,28 +80,30 @@ class Tournament_Service
 			}
 
 			if ( ! $this->matches->exists_in_tournament( $id, $match['round'], $match['player_id'] ) ) {
-				$match['id'] = $this->matches->save( new Match(
-					$id,
-					$match['round'],
-					$match['date'],
-					$match['player_id'],
-					isset( $match['opponent_id'] ) ? $match['opponent_id'] : null,
-					$match['outcome'],
-					isset( $match['wins'] ) ? $match['wins'] : null,
-					isset( $match['losses'] ) ? $match['losses'] : null,
-					isset( $match['draws'] ) ? $match['draws'] : null
-				) );
+				$m = new Match( $id, $match['round'], $match['date'], $match['player_id'], $match['outcome'] );
+				if ( isset( $match['opponent_id'] ) ) {
+					$m->set_opponent_id( $match['opponent_id'] );
+				}
+				if ( isset( $match['wins'] ) ) {
+					$m->set_wins( $match['wins'] );
+				}
+				if ( isset( $match['losses'] ) ) {
+					$m->set_losses( $match['losses'] );
+				}
+				if ( isset( $match['draws'] ) ) {
+					$m->set_draws( $match['draws'] );
+				}
+				$match['id'] = $this->matches->save( $m );
 			}
 		}
 
 		$abbr_results = array();
-		foreach ( $standings as $standing ) {
-			$abbr_results[$standing['rank']] = array(
-				"player" => $standing['id'],
-				"points" => $standing['points']
+		foreach ( $standings as $std ) {
+			$abbr_results[$std['rank']] = array(
+				"player" => $std['id'],
+				"points" => $std['points']
 			);
 		}
-
 		$tournament = $this->tournaments->get_by_id( $id );
 		$tournament->add_results( $xml, $abbr_results );
 		$this->tournaments->save( $tournament );
@@ -136,5 +138,15 @@ class Tournament_Service
 			$this->leagues->save( $league );
 			$this->tournaments->save( $tournament );
 		}
+	}
+
+	public function delete_results( $id ) {
+		$tournament = $this->tournaments->get_by_id( $id );
+		if ( $currentFile = $tournament->get_xml() ) {
+			unlink( $currentFile );
+		}
+		$tournament->delete_results();
+		$this->tournaments->save( $tournament );
+		$this->matches->delete_all_by_tournament( $id );
 	}
 }

@@ -9,10 +9,11 @@ class Standings_List_Table extends List_Table
 	private $rules;
 	private $events;
 
-	public function __construct( Tournament $tournament, League_Rules $rules, Player_service $players ) {
+	public function __construct( Tournament $tournament, League_Rules $rules, Player_service $players, Event_Service $events ) {
 		$this->tournament = $tournament;
 		$this->rules = $rules;
 		$this->players = $players;
+		$this->events = $events;
 		wp_enqueue_script( 'prize-control' );
 	}
 
@@ -45,7 +46,7 @@ class Standings_List_Table extends List_Table
 
 	protected function get_top_tablenav() {
 		if ( $this->is_open() ) {
-			return sprintf('%s%s%s',
+			return sprintf( '%s%s%s',
 				get_submit_button( __( 'Save All', 'league' ), 'primary', 'submit', false ),
 				sprintf( '<input type="button" class="button reset-league-points" value="%s" />', __( 'Reset', 'league' ) ),
 				sprintf( '<span class="control-values">%s%s%s</span>',
@@ -84,7 +85,7 @@ class Standings_List_Table extends List_Table
 				$this->rules->get_recommended_prize( $this->get_index() + 1 )
 			);
 		} else {
-			return $this->events->get_credits( $this->tournament, $this->players->get_by_id( $standing['player'] ) );
+			return $this->events->get_credit_points( $this->tournament->get_id(), $standing['player'] );
 		}
 	}
 
@@ -95,7 +96,7 @@ class Standings_List_Table extends List_Table
 				$this->rules->get_recommended_league_points( $standing )
 			);
 		} else {
-			return $this->events->get_league_points( $this->tournament, $this->players->get_by_id( $standing['player'] ) );
+			return $this->events->get_league_points( $this->tournament->get_id(), $standing['player'] );
 		}
 	}
 
@@ -106,7 +107,7 @@ class Standings_List_Table extends List_Table
 				checked( $this->get_index(), 0, false )
 			);
 		} else {
-			if ( $this->events->is_winner( $this->tournament, $this->players->get_by_id( $standing['player'] ) ) ) {
+			if ( $this->events->is_winner( $this->tournament->get_id(), $standing['player'] ) ) {
 				return sprintf( '<input class="league-winner" type="checkbox" name="players[%u][winner]" %s %s/>',
 					$standing['player'],
 					checked( true, true, false ),

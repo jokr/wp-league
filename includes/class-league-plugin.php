@@ -9,6 +9,7 @@ require_once LEAGUE_PLUGIN_DIR . 'includes/domain/persistence/class-league-event
 require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-league-service.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-tournament-service.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-player-service.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-event-service.php';
 
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-league-screen.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-tournament-screen.php';
@@ -31,6 +32,7 @@ class League_Plugin
 	private $league_service;
 	private $tournament_service;
 	private $player_service;
+	private $event_service;
 
 	public static function get_instance() {
 		if ( null == self::$instance ) {
@@ -52,13 +54,14 @@ class League_Plugin
 			$this->leagues, $this->tournaments, $this->players, $this->matches, $this->events
 		);
 		$this->player_service = new Player_Service( $this->players );
+		$this->event_service = new Event_Service( $this->events );
 
 		// Register activation and deactivation
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 
 		if ( is_admin() ) {
 			new League_Screen( $this->league_service, $this->tournament_service );
-			Tournament_Screen::get_instance( $this->league_service, $this->tournament_service, $this->player_service );
+			Tournament_Screen::get_instance( $this->league_service, $this->tournament_service, $this->player_service, $this->event_service );
 		} else {
 			add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
 			new League_Signup_Page( array(

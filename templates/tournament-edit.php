@@ -6,8 +6,8 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 	wp_die( 'You do not have sufficient permissions to access this page.' );
 }
 
-wp_enqueue_script( 'tournament-admin' );
-wp_enqueue_style( 'tournament-admin' );
+//wp_enqueue_script( 'tournament-admin' );
+//wp_enqueue_style( 'tournament-admin' );
 
 $screen = Tournament_Screen::get_instance();
 
@@ -79,7 +79,7 @@ $disabled = in_array( $tournament->get_status(), array( 'FINISHED', 'CLOSED' ) )
 		</table>
 		<?php if ( ! $disabled ) submit_button( __( 'Update' ) ); ?>
 	</form>
-	<?php if ( 'OPEN' === $tournament->get_status() ) : ?>
+	<?php if ( 'WAITING' === $tournament->get_status() ) : ?>
 		<h2><?php _e( 'Upload Results', 'league' ) ?></h2>
 		<form name="upload-results" id="upload-results" method="post" enctype="multipart/form-data"
 			  action="<?php echo admin_url( 'admin-post.php' ) ?>" class="validate">
@@ -100,7 +100,9 @@ $disabled = in_array( $tournament->get_status(), array( 'FINISHED', 'CLOSED' ) )
 		require_once LEAGUE_PLUGIN_DIR . 'includes/class-league-rules.php';
 
 		$matches = new Match_List_Table( $tournament, $screen->get_players() );
-		$standings = new Standings_List_Table( $tournament, new League_Rules( $tournament->get_standings() ), $screen->get_players() );
+		$standings = new Standings_List_Table(
+			$tournament,
+			new League_Rules( $tournament->get_standings() ), $screen->get_players(), $screen->get_events() );
 
 		$matches->prepare_items();
 		$standings->prepare_items();

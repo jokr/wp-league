@@ -14,7 +14,6 @@ class WER_Result_Handler
 
 		$this->read_standings();
 		$this->read_matches();
-
 	}
 
 	private function read_standings() {

@@ -33,7 +33,7 @@ abstract class Repository
 		return $wpdb->get_results( "SELECT $this->columns FROM $this->table ORDER BY $this->sort", ARRAY_A );
 	}
 
-	protected function query( $query ) {
+	public function query( $query ) {
 		global $wpdb;
 		return $wpdb->get_results( "SELECT $this->columns FROM $this->table " . $query, ARRAY_A );
 	}

@@ -10,12 +10,14 @@ class Tournament_Screen extends Admin_Screen
 	private $leagues;
 	private $matches;
 	private $players;
+	private $events;
 
 	public static function get_instance( League_service $leagues = null,
 										 Tournament_Service $tournaments = null,
-										 Player_Service $players = null ) {
+										 Player_Service $players = null,
+										 Event_Service $events = null ) {
 		if ( null == self::$instance ) {
-			self::$instance = new Tournament_Screen( $leagues, $tournaments, $players );
+			self::$instance = new Tournament_Screen( $leagues, $tournaments, $players, $events );
 		}
 		return self::$instance;
 	}
@@ -23,12 +25,14 @@ class Tournament_Screen extends Admin_Screen
 	protected function __construct(
 		League_service $leagues,
 		Tournament_Service $tournaments,
-		Player_Service $players
+		Player_Service $players,
+		Event_Service $events
 	) {
 		parent::__construct();
 		$this->tournaments = $tournaments;
 		$this->leagues = $leagues;
 		$this->players = $players;
+		$this->events = $events;
 
 		add_action( 'admin_post_add_tournament', array( $this, 'add_tournament' ) );
 		add_action( 'admin_post_edit_tournament', array( $this, 'edit_tournament' ) );
@@ -55,7 +59,7 @@ class Tournament_Screen extends Admin_Screen
 				load_template( LEAGUE_PLUGIN_DIR . '/templates/tournament-edit.php' );
 				break;
 			default:
-				load_template( LEAGUE_PLUGIN_DIR . '/templates/tournament-admin.php');
+				load_template( LEAGUE_PLUGIN_DIR . '/templates/tournament-admin.php' );
 		}
 	}
 
@@ -155,25 +159,12 @@ class Tournament_Screen extends Admin_Screen
 	public function delete_results() {
 		check_admin_referer( 'delete-results', '_wpnonce_delete_results' );
 		if ( isset( $_POST['id'] ) && is_numeric( $_POST['id'] ) && $this->tournaments->exists( $_POST['id'] ) ) {
-			$tournament = $this->tournaments->get_by_id( $_POST['id'] );
-			if ( $currentFile = $tournament->get_xml() ) {
-				unlink( $currentFile );
-			}
-			$tournament->delete_results();
-			$tournament->save();
-			$this->matches->delete_all_by_tournament( $tournament->get_id() );
-			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(
-					'page' => 'tournaments',
-					'updated' => 'true',
-					'action' => 'edit',
-					'id' => $tournament->get_id()
-				) )
-			) );
+			$this->tournaments->delete_results($_POST['id']);
 			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(
 					'page' => 'tournaments',
 					'deleted' => 'true',
 					'action' => 'edit',
-					'id' => $tournament->get_id()
+					'id' => $_POST['id']
 				) )
 			) );
 		} else {
@@ -192,7 +183,7 @@ class Tournament_Screen extends Admin_Screen
 		) {
 			require_once LEAGUE_PLUGIN_DIR . 'includes/domain/model/events/class-participated-tournament.php';
 
-			$this->tournaments->save_points($_POST['id'], $_POST['players'] );
+			$this->tournaments->save_points( $_POST['id'], $_POST['players'] );
 			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(
 					'page' => 'tournaments',
 					'updated' => 'true',
@@ -220,5 +211,9 @@ class Tournament_Screen extends Admin_Screen
 
 	public function get_players() {
 		return $this->players;
+	}
+
+	public function get_events() {
+		return $this->events;
 	}
 }
