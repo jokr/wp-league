@@ -35,7 +35,7 @@ class Standings_List_Table extends List_Table
 
 	protected function get_column_widths() {
 		return array(
-			'rank' => '5%',
+			'rank' => '7%',
 			'name' => '30%'
 		);
 	}
@@ -46,8 +46,8 @@ class Standings_List_Table extends List_Table
 
 	protected function get_top_tablenav() {
 		if ( $this->is_open() ) {
-			return sprintf( '%s%s%s',
-				get_submit_button( __( 'Save All', 'league' ), 'primary', 'submit', false ),
+			return sprintf('%s%s%s',
+				get_submit_button(__( 'Save All', 'league' ), 'primary', 'submit', false),
 				sprintf( '<input type="button" class="button reset-league-points" value="%s" />', __( 'Reset', 'league' ) ),
 				sprintf( '<span class="control-values">%s%s%s</span>',
 					$this->disabled_number_input( __( 'Players', 'league' ), 'players', count( $this->items ) ),
