@@ -6,8 +6,8 @@ if ( ! current_user_can( 'publish_pages' ) ) {
 	wp_die( 'You do not have sufficient permissions to access this page.' );
 }
 
-//wp_enqueue_script( 'tournament-admin' );
-//wp_enqueue_style( 'tournament-admin' );
+wp_enqueue_script( 'tournament-admin' );
+wp_enqueue_style( 'tournament-admin' );
 
 $screen = Tournament_Screen::get_instance();
 

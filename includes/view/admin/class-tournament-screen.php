@@ -8,7 +8,6 @@ class Tournament_Screen extends Admin_Screen
 
 	private $tournaments;
 	private $leagues;
-	private $matches;
 	private $players;
 	private $events;
 
@@ -54,6 +53,8 @@ class Tournament_Screen extends Admin_Screen
 	}
 
 	public function load_tournament_menu() {
+		$this->tournaments->update_tournament_status();
+
 		switch ( $this->current_action() ) {
 			case 'edit':
 				load_template( LEAGUE_PLUGIN_DIR . '/templates/tournament-edit.php' );

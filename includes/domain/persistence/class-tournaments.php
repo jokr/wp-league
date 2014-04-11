@@ -65,4 +65,9 @@ class Tournaments extends Repository
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbdelta( $sql );
 	}
+
+	public function update_tournament_status() {
+		global $wpdb;
+		$wpdb->query( "UPDATE $this->table SET status = 'WAITING' WHERE status = 'OPEN' AND date < CURDATE()" );
+	}
 }

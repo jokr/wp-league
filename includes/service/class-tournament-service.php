@@ -149,4 +149,8 @@ class Tournament_Service
 		$this->tournaments->save( $tournament );
 		$this->matches->delete_all_by_tournament( $id );
 	}
+
+	public function update_tournament_status() {
+		$this->tournaments->update_tournament_status();
+	}
 }
