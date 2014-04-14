@@ -4,12 +4,21 @@ require_once dirname( __FILE__ ) . '/class-admin-screen.php';
 
 class League_Screen extends Admin_Screen
 {
+	private static $instance;
+
 	private $leagues;
 	private $tournaments;
 
 	private $slug;
 
-	public function __construct( League_Service $leagues, Tournament_Service $tournaments ) {
+	public static function get_instance( League_Service $leagues, Tournament_Service $tournaments ) {
+		if ( null == self::$instance ) {
+			self::$instance = new League_Screen( $leagues, $tournaments );
+		}
+		return self::$instance;
+	}
+
+	protected function __construct( League_Service $leagues, Tournament_Service $tournaments ) {
 		parent::__construct();
 		$this->leagues = $leagues;
 		$this->tournaments = $tournaments;

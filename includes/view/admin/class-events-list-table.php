@@ -5,13 +5,15 @@ require_once LEAGUE_PLUGIN_DIR . 'includes/view/class-list-table.php';
 class Events_List_Table extends List_Table
 {
 	private $player;
+	private $events;
 
-	public function __construct( Player $player ) {
+	public function __construct( Player $player, Event_Service $events ) {
 		$this->player = $player;
+		$this->events = $events;
 	}
 
 	protected function get_items() {
-		return League_Plugin::get_instance()->get_events()->get_by_player( $this->player );
+		return $this->events->get_by_player( $this->player );
 	}
 
 	protected function get_all_columns() {

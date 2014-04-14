@@ -6,7 +6,7 @@ class Players_List_Table extends List_Table
 {
 	private $players;
 
-	public function __construct( Players $players ) {
+	public function __construct( Player_Service $players ) {
 		$this->players = $players;
 	}
 
@@ -31,6 +31,6 @@ class Players_List_Table extends List_Table
 		);
 
 		return sprintf( '<a href="%s">%s %s</a>', esc_url( admin_url( 'admin.php' ) . '?' . http_build_query( $query ) ),
-			$player->getFirst(), $player->getLast() );
+			$player->get_first(), $player->get_last() );
 	}
 }

@@ -11,4 +11,8 @@ class Player_Service
 	public function get_by_id( $id ) {
 		return $this->players->get_by_id( $id );
 	}
+
+	public function get_all() {
+		return $this->players->get_all();
+	}
 }

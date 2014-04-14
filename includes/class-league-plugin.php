@@ -13,6 +13,7 @@ require_once LEAGUE_PLUGIN_DIR . 'includes/service/class-event-service.php';
 
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-league-screen.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-tournament-screen.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-player-screen.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/frontend/class-league-shortcode.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/class-league-signup-page.php';
 
@@ -60,8 +61,9 @@ class League_Plugin
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 
 		if ( is_admin() ) {
-			new League_Screen( $this->league_service, $this->tournament_service );
+			League_Screen::get_instance( $this->league_service, $this->tournament_service );
 			Tournament_Screen::get_instance( $this->league_service, $this->tournament_service, $this->player_service, $this->event_service );
+			Player_Screen::get_instance( $this->player_service, $this->event_service );
 		} else {
 			add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
 			new League_Signup_Page( array(

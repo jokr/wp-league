@@ -37,4 +37,8 @@ class Event_Service
 			return false;
 		}
 	}
+
+	public function get_by_player( $player ) {
+		return $this->events->get_by_player( $player );
+	}
 }
