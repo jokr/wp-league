@@ -9,12 +9,14 @@ class Player extends Model
 	protected $dci;
 	protected $credits;
 	protected $wp_user_id;
+	protected $secret;
 
 	public static function from_array( $id, array $array ) {
 		$result = new Player( $array['first'], $array['last'], $array['dci'] );
-		$result->set_id( (int) $id );
-		$result->set_credits( (int) $array['credits'] );
-		$result->set_wp_user_id( (int) $array['wp_user_id'] );
+		$result->set_id( (int)$id );
+		$result->set_credits( (int)$array['credits'] );
+		$result->set_wp_user_id( (int)$array['wp_user_id'] );
+		$result->set_secret( $array['secret'] );
 		return $result;
 	}
 
@@ -72,6 +74,14 @@ class Player extends Model
 
 	public function get_wp_user_id() {
 		return $this->wp_user_id;
+	}
+
+	public function get_secret() {
+		return $this->secret;
+	}
+
+	public function set_secret( $secret ) {
+		$this->secret = $secret;
 	}
 
 	public function get_full_name() {
