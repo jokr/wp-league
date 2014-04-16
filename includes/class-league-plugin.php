@@ -15,7 +15,7 @@ require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-league-screen.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-tournament-screen.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-player-screen.php';
 require_once LEAGUE_PLUGIN_DIR . 'includes/view/frontend/class-league-shortcode.php';
-require_once LEAGUE_PLUGIN_DIR . 'includes/class-league-signup-page.php';
+require_once LEAGUE_PLUGIN_DIR . 'includes/class-custom-page.php';
 
 class League_Plugin
 {
@@ -66,16 +66,14 @@ class League_Plugin
 			Player_Screen::get_instance( $this->player_service, $this->event_service );
 		} else {
 			add_action( 'wp_head', array( $this, 'get_ajaxurl' ) );
-			new League_Signup_Page( array(
-				'url' => 'league-signup',
-				'pagename' => 'league-signup'
-			) );
+			new Custom_Page( 'league-signup', 'league-signup', LEAGUE_PLUGIN_DIR . 'templates/league-signup.php' );
 		}
 
 		add_action( 'init', array( $this, 'init' ) );
 	}
 
 	public function init() {
+		flush_rewrite_rules(false);
 		add_shortcode( 'league', array( new League_Shortcode( $this->league_service, $this->player_service ), 'render' ) );
 		add_action( 'wp_ajax_nopriv_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );
 		add_action( 'wp_ajax_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );
