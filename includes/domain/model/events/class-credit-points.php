@@ -5,12 +5,10 @@ require_once dirname( __FILE__ ) . '/class-league-event.php';
 class Credit_Points extends League_Event
 {
 	private $credits;
-	private $reason;
 
-	public function __construct( Player $player, $credits, $reason, $date ) {
+	public function __construct( Player $player, $credits, $date ) {
 		parent::__construct( $player );
 		$this->credits = $credits;
-		$this->reason = $reason;
 		$this->date = $date;
 	}
 
@@ -19,7 +17,7 @@ class Credit_Points extends League_Event
 	}
 
 	function get_message() {
-		return sprintf( '%s You received %u credits!', $this->reason, $this->credits );
+		return sprintf( '%u credits awarded.', $this->credits );
 	}
 
 	function get_date() {

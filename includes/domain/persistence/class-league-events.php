@@ -12,7 +12,7 @@ class League_Events extends Repository
 
 		$this->table = $wpdb->prefix . 'league_events';
 		$wpdb->league_events = $this->table;
-		$this->columns = 'id, date, type, player_id, league_id, message, params';
+		$this->columns = 'id, date, type, player_id, league_id, params';
 		$this->sort = 'date';
 	}
 
@@ -26,7 +26,6 @@ class League_Events extends Repository
 			player_id MEDIUMINT NOT NULL,
 			league_id MEDIUMINT,
 			tournament_id MEDIUMINT,
-			message MEDIUMTEXT,
 			params MEDIUMTEXT NOT NULL,
 			PRIMARY KEY id (id)
 			INDEX player_ind (player_id),

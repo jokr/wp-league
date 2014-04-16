@@ -7,7 +7,7 @@ class Tournament_Credit_Points extends Credit_Points
 	private $tournament;
 
 	public function __construct( Player $player, Tournament $tournament, $credits ) {
-		parent::__construct( $player, $credits, __( 'Tournament Reward.', 'league' ), $tournament->get_date() );
+		parent::__construct( $player, $credits, $tournament->get_date() );
 		$this->tournament = $tournament;
 	}
 

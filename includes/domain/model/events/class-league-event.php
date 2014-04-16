@@ -26,7 +26,6 @@ abstract class League_Event extends Model
 			'date' => $this->get_date(),
 			'type' => $this->get_type(),
 			'player_id' => $this->get_player()->get_id(),
-			'message' => $this->get_message(),
 			'params' => serialize( $this->get_params() )
 		);
 	}
