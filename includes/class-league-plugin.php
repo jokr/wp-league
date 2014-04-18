@@ -55,7 +55,7 @@ class League_Plugin
 			$this->leagues, $this->tournaments, $this->players, $this->matches, $this->events
 		);
 		$this->player_service = new Player_Service( $this->players );
-		$this->event_service = new Event_Service( $this->events );
+		$this->event_service = new Event_Service( $this->events, $this->players, $this->leagues, $this->tournaments );
 
 		// Register activation and deactivation
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
@@ -73,7 +73,7 @@ class League_Plugin
 	}
 
 	public function init() {
-		flush_rewrite_rules(false);
+		flush_rewrite_rules( false );
 		add_shortcode( 'league', array( new League_Shortcode( $this->league_service, $this->player_service ), 'render' ) );
 		add_action( 'wp_ajax_nopriv_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );
 		add_action( 'wp_ajax_get_tournament_standings', array( $this, 'ajax_get_tournament_standings' ) );

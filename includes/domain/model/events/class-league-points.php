@@ -38,7 +38,7 @@ class League_Points extends League_Event
 	}
 
 	public function get_type() {
-		return 'LEAGUE POINTS';
+		return 'LEAGUE_POINTS';
 	}
 
 	public function get_vars() {

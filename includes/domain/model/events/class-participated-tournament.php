@@ -10,31 +10,16 @@ class Participated_Tournament extends League_Event
 	private $tournament;
 	private $rank;
 	private $winner;
-	private $credit_event;
-	private $points_event;
 
-	public function __construct( Player $player, League $league, Tournament $tournament, $rank, $winner, $points, $credits ) {
+	public function __construct( Player $player, League $league, Tournament $tournament, $rank, $winner ) {
 		parent::__construct( $player );
 		$this->league = $league;
 		$this->tournament = $tournament;
 		$this->rank = $rank;
-		if ( $credits > 0 ) {
-			$this->credit_event = new Tournament_Credit_Points( $player, $tournament, $credits );
-		}
-		if ( $points > 0 ) {
-			$this->points_event = new League_Points( $player, $this->league, $tournament, $points, $winner, $this->get_date() );
-		}
 	}
 
 	protected function _apply() {
 		$this->league->add_player( $this->player->get_id() );
-
-		if ( isset( $this->credit_event ) ) {
-			$this->credit_event->apply();
-		}
-		if ( isset( $this->points_event ) ) {
-			$this->points_event->apply();
-		}
 
 		if ( $this->winner ) {
 			$this->tournament->set_winner( $this->player->get_id() );
@@ -42,9 +27,9 @@ class Participated_Tournament extends League_Event
 	}
 
 	public function get_message() {
-		return __( sprintf( 'You played in a tournament on %s and finished %u.',
+		return __( sprintf( 'You played in a tournament on %s and finished %s.',
 			date_i18n( get_option( 'date_format' ), strtotime( $this->get_date() ) ),
-			$this->rank
+			$this->get_rank_string( $this->rank )
 		), 'league' );
 	}
 
@@ -65,22 +50,19 @@ class Participated_Tournament extends League_Event
 
 	public function get_params() {
 		$result = array( 'rank' => $this->rank );
-		if ( isset( $this->credits ) ) {
-			$result['credits'] = $this->credits->get_id();
-		}
-		if ( isset( $this->points ) ) {
-			$result['points'] = $this->points->get_id();
-		}
 		return $result;
 	}
 
-	public function get_points_event() {
-		return $this->points_event;
+	private function get_rank_string( $rank ) {
+		switch ( $rank ) {
+			case 1:
+				return '1st';
+			case 2:
+				return '2nd';
+			case 3:
+				return '3rd';
+			default:
+				return $rank . 'th';
+		}
 	}
-
-	public function get_credit_event() {
-		return $this->credit_event;
-	}
-
-
 }

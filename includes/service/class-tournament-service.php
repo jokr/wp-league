@@ -125,13 +125,28 @@ class Tournament_Service
 					$standing['credits']
 				);
 				$event->apply();
-				if ( $standing['credits'] > 0 ) {
-					$this->events->save( $event->get_credit_event() );
-				}
-				if ( $standing['league'] > 0 ) {
-					$this->events->save( $event->get_points_event() );
-				}
 				$this->events->save( $event );
+
+				if ( $standing['league'] > 0 ) {
+					$event = new League_Points(
+						$player,
+						$league,
+						$tournament,
+						$standing['league'],
+						isset( $standing['winner'] ),
+						$tournament->get_date()
+					);
+
+					$event->apply();
+					$this->events->save( $event );
+				}
+
+				if ( $standing['credits'] > 0 ) {
+					$event = new Tournament_Credit_Points( $player, $tournament, $standing['credits'] );
+					$event->apply();
+					$this->events->save( $event );
+				}
+
 				$this->players->save( $player );
 			}
 			$tournament->set_status( 'CLOSED' );

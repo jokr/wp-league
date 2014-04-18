@@ -29,7 +29,7 @@ class Events_List_Table extends List_Table
 		return array( 'date' );
 	}
 
-	protected function column_date( $event ) {
-		return date_i18n( get_option( 'date_format' ), strtotime( $event['date'] ) );
+	protected function column_date( League_Event $event ) {
+		return date_i18n( get_option( 'date_format' ), strtotime( $event->get_date() ) );
 	}
 }

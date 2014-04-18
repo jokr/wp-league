@@ -2,6 +2,8 @@
 
 include_once LEAGUE_PLUGIN_DIR . 'includes/domain/model/events/class-credit-points.php';
 include_once LEAGUE_PLUGIN_DIR . 'includes/domain/model/events/class-tournament-credit-points.php';
+include_once LEAGUE_PLUGIN_DIR . 'includes/domain/model/events/class-participated-tournament.php';
+include_once LEAGUE_PLUGIN_DIR . 'includes/domain/model/events/class-league-points.php';
 
 class League_Events extends Repository
 {
@@ -12,8 +14,8 @@ class League_Events extends Repository
 
 		$this->table = $wpdb->prefix . 'league_events';
 		$wpdb->league_events = $this->table;
-		$this->columns = 'id, date, type, player_id, league_id, params';
-		$this->sort = 'date';
+		$this->columns = 'id, date, type, player_id, league_id, tournament_id, params';
+		$this->sort = 'date desc';
 	}
 
 	public function create_table() {
@@ -40,6 +42,9 @@ class League_Events extends Repository
 
 	public function get_by_player( Player $player ) {
 		$p_id = $player->get_id();
-		return parent::query( "WHERE player_id = $p_id" );
+		foreach ( $result = parent::query( "WHERE player_id = $p_id ORDER BY date desc" ) as &$event ) {
+			$event['params'] = unserialize( $event['params'] );
+		}
+		return $result;
 	}
 }

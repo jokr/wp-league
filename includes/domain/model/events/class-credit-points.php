@@ -17,7 +17,7 @@ class Credit_Points extends League_Event
 	}
 
 	function get_message() {
-		return sprintf( '%u credits awarded.', $this->credits );
+		return sprintf( '%u credit points awarded.', $this->credits );
 	}
 
 	function get_date() {

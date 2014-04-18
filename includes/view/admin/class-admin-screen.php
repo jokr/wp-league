@@ -81,6 +81,13 @@ abstract class Admin_Screen
 			array( 'league-admin-jquery-ui', 'jquery-timepicker' ),
 			LEAGUE_PLUGIN_VERSION
 		);
+
+		wp_register_style(
+			'player-admin',
+			LEAGUE_PLUGIN_URL . 'css/player-admin.css',
+			array(),
+			LEAGUE_PLUGIN_VERSION
+		);
 	}
 
 	protected function ajax_callbacks() {

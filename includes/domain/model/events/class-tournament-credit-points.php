@@ -17,4 +17,8 @@ class Tournament_Credit_Points extends Credit_Points
 		$result['tournament_id'] = $this->tournament->get_id();
 		return $result;
 	}
+
+	public function get_type() {
+		return 'TOURNAMENT_CREDIT_POINTS';
+	}
 }

@@ -41,6 +41,7 @@ class Player_Screen extends Admin_Screen
 		switch ( $this->current_action() ) {
 			case 'display':
 				require_once LEAGUE_PLUGIN_DIR . 'includes/view/admin/class-events-list-table.php';
+				wp_enqueue_style( 'player-admin' );
 				$player = $this->players->get_by_id( $_GET['id'] );
 				$events = new Events_List_Table( $player, $this->events );
 				$events->prepare_items();
@@ -65,5 +66,9 @@ class Player_Screen extends Admin_Screen
 
 	public function get_players() {
 		return $this->players;
+	}
+
+	public function get_events() {
+		return $this->events;
 	}
 }
