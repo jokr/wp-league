@@ -19,6 +19,8 @@ class Participated_Tournament extends League_Event
 	}
 
 	protected function _apply() {
+		assert( ! isset( $this->id ) );
+
 		$this->league->add_player( $this->player->get_id() );
 
 		if ( $this->winner ) {
@@ -51,6 +53,11 @@ class Participated_Tournament extends League_Event
 	public function get_params() {
 		$result = array( 'rank' => $this->rank );
 		return $result;
+	}
+
+	public function rewind() {
+		assert( isset( $this->id ) );
+		$this->league->remove_player( $this->player->get_id() );
 	}
 
 	private function get_rank_string( $rank ) {

@@ -41,4 +41,6 @@ abstract class League_Event extends Model
 	public abstract function get_type();
 
 	public abstract function get_params();
+
+	public abstract function rewind();
 }

@@ -13,7 +13,7 @@ class Events_List_Table extends List_Table
 	}
 
 	protected function get_items() {
-		return $this->events->get_by_player( $this->player );
+		return $this->events->get_by_player( $this->player->get_id() );
 	}
 
 	protected function get_all_columns() {

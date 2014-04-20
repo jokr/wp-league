@@ -13,6 +13,7 @@ class Credit_Points extends League_Event
 	}
 
 	protected function _apply() {
+		assert( ! isset( $this->id ) );
 		$this->player->award_credits( $this->credits );
 	}
 
@@ -36,5 +37,10 @@ class Credit_Points extends League_Event
 		return array(
 			'credits' => $this->credits
 		);
+	}
+
+	public function rewind() {
+		assert( isset( $this->id ) );
+		$this->player->award_credits( - $this->credits );
 	}
 }

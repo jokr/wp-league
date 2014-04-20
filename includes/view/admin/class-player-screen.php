@@ -48,7 +48,9 @@ class Player_Screen extends Admin_Screen
 				?>
 				<div class="wrap nosubsub">
 
-					<h2><?php echo $player->get_full_name() ?></h2>
+					<h2><?php echo $player->get_full_name(); ?></h2>
+
+					<h3><?php echo $player->get_credits(); ?> Credit Points</h3>
 
 					<div id="col-container">
 						<div class="col-wrap">

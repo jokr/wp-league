@@ -40,9 +40,15 @@ class League_Events extends Repository
 		dbdelta( $sql );
 	}
 
-	public function get_by_player( Player $player ) {
-		$p_id = $player->get_id();
-		foreach ( $result = parent::query( "WHERE player_id = $p_id ORDER BY date desc" ) as &$event ) {
+	public function get_by_player( $player_id ) {
+		foreach ( $result = parent::query( "WHERE player_id = $player_id ORDER BY date desc" ) as &$event ) {
+			$event['params'] = unserialize( $event['params'] );
+		}
+		return $result;
+	}
+
+	public function get_by_tournament( $tournament_id ) {
+		foreach ( $result = parent::query( "WHERE tournament_id = $tournament_id ORDER BY date desc" ) as &$event ) {
 			$event['params'] = unserialize( $event['params'] );
 		}
 		return $result;

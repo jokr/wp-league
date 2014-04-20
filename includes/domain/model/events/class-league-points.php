@@ -20,9 +20,8 @@ class League_Points extends League_Event
 	}
 
 	protected function _apply() {
-		if ( $this->points > 0 ) {
-			$this->league->add_league_points( $this->get_player()->get_id(), $this->points, $this->winner );
-		}
+		assert( ! isset( $this->id ) );
+		$this->league->add_league_points( $this->get_player()->get_id(), $this->points, $this->winner );
 	}
 
 	public function get_message() {
@@ -53,5 +52,10 @@ class League_Points extends League_Event
 			'winner' => $this->winner,
 			'points' => $this->points
 		);
+	}
+
+	public function rewind() {
+		assert( isset( $this->id ) );
+		$this->league->remove_league_points( $this->player->get_id(), $this->points, $this->winner );
 	}
 }

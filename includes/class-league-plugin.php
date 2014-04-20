@@ -51,11 +51,12 @@ class League_Plugin
 		$this->events = new League_Events();
 
 		$this->league_service = new League_Service( $this->leagues, $this->tournaments );
-		$this->tournament_service = new Tournament_Service(
-			$this->leagues, $this->tournaments, $this->players, $this->matches, $this->events
-		);
+
 		$this->player_service = new Player_Service( $this->players );
 		$this->event_service = new Event_Service( $this->events, $this->players, $this->leagues, $this->tournaments );
+		$this->tournament_service = new Tournament_Service(
+			$this->leagues, $this->tournaments, $this->players, $this->matches, $this->event_service
+		);
 
 		// Register activation and deactivation
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );

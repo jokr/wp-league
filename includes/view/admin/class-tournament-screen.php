@@ -160,7 +160,7 @@ class Tournament_Screen extends Admin_Screen
 	public function delete_results() {
 		check_admin_referer( 'delete-results', '_wpnonce_delete_results' );
 		if ( isset( $_POST['id'] ) && is_numeric( $_POST['id'] ) && $this->tournaments->exists( $_POST['id'] ) ) {
-			$this->tournaments->delete_results($_POST['id']);
+			$this->tournaments->delete_results( $_POST['id'] );
 			wp_redirect( admin_url( 'admin.php?' . http_build_query( array(
 					'page' => 'tournaments',
 					'deleted' => 'true',

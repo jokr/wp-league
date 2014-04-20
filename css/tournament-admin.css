@@ -16,6 +16,10 @@ input.credit-points, input.league-points {
     width: 50px;
 }
 
+input[disabled] {
+    color: #7f7f7f;
+}
+
 dialog {
     display: none;
     position: absolute;

@@ -19,7 +19,7 @@ class League extends Model
 	}
 
 	public static function from_array( $id, array $array ) {
-		$result = new League( $array['name'], $array['start'], $array['end'], unserialize($array['standings']) );
+		$result = new League( $array['name'], $array['start'], $array['end'], unserialize( $array['standings'] ) );
 		$result->set_id( $id );
 		return $result;
 	}
@@ -85,7 +85,9 @@ class League extends Model
 
 	public function remove_player( $player_id ) {
 		if ( isset( $this->standings[$player_id] ) ) {
-			$this->standings[$player_id]['participation'] --;
+			if ( $this->standings[$player_id]['participation'] -- == 1 ) {
+				unset( $this->standings[$player_id] );
+			}
 		}
 	}
 
@@ -99,10 +101,10 @@ class League extends Model
 	}
 
 	public function remove_league_points( $player_id, $points, $winner ) {
-		if ( $standing = $this->standings[$player_id] ) {
-			$standing['points'] -= $points;
+		if ( isset( $this->standings[$player_id] ) ) {
+			$this->standings[$player_id]['points'] -= $points;
 			if ( $winner ) {
-				$standing['wins'] --;
+				$this->standings[$player_id]['wins'] --;
 			}
 		}
 	}

@@ -7,7 +7,7 @@ class Tournament_Service
 	private $matches;
 	private $events;
 
-	public function __construct( Leagues $leagues, Tournaments $tournaments, Players $players, Matches $matches, League_Events $events ) {
+	public function __construct( Leagues $leagues, Tournaments $tournaments, Players $players, Matches $matches, Event_Service $events ) {
 		$this->leagues = $leagues;
 		$this->tournaments = $tournaments;
 		$this->players = $players;
@@ -112,43 +112,9 @@ class Tournament_Service
 	public function save_points( $id, $standings ) {
 		if ( $tournament = $this->tournaments->get_by_id( $id ) ) {
 			$league = $this->leagues->get_by_id( $tournament->get_league_id() );
-			foreach ( $standings as $id => $standing ) {
-				$player = $this->players->get_by_id( $id );
 
-				$event = new Participated_Tournament(
-					$player,
-					$league,
-					$tournament,
-					$standing['rank'],
-					isset( $standing['winner'] ),
-					$standing['league'],
-					$standing['credits']
-				);
-				$event->apply();
-				$this->events->save( $event );
+			$this->events->create_standings_events( $tournament, $league, $standings );
 
-				if ( $standing['league'] > 0 ) {
-					$event = new League_Points(
-						$player,
-						$league,
-						$tournament,
-						$standing['league'],
-						isset( $standing['winner'] ),
-						$tournament->get_date()
-					);
-
-					$event->apply();
-					$this->events->save( $event );
-				}
-
-				if ( $standing['credits'] > 0 ) {
-					$event = new Tournament_Credit_Points( $player, $tournament, $standing['credits'] );
-					$event->apply();
-					$this->events->save( $event );
-				}
-
-				$this->players->save( $player );
-			}
 			$tournament->set_status( 'CLOSED' );
 			$this->leagues->save( $league );
 			$this->tournaments->save( $tournament );
@@ -161,6 +127,7 @@ class Tournament_Service
 			unlink( $currentFile );
 		}
 		$tournament->delete_results();
+		$this->events->delete_results( $tournament );
 		$this->tournaments->save( $tournament );
 		$this->matches->delete_all_by_tournament( $id );
 	}
