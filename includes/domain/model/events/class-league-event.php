@@ -10,11 +10,7 @@ abstract class League_Event extends Model
 		$this->player = $player;
 	}
 
-	public final function apply() {
-		$this->_apply();
-	}
-
-	protected abstract function _apply();
+	public abstract function apply();
 
 	public function has_been_applied() {
 		return isset( $this->id );

@@ -48,8 +48,18 @@ class Event_Service
 		$result = array();
 		foreach ( $this->events->get_by_player( $player_id ) as $event ) {
 			$player = $this->players->get_by_id( $event['player_id'] );
-			$league = $this->leagues->get_by_id( $event['league_id'] );
-			$tournament = $this->tournaments->get_by_id( $event['tournament_id'] );
+			if ( isset( $event['league_id'] ) ) {
+				$league = $this->leagues->get_by_id( $event['league_id'] );
+			} else {
+				$league = null;
+			}
+
+			if ( isset( $event['tournament_id'] ) ) {
+				$tournament = $this->tournaments->get_by_id( $event['tournament_id'] );
+			} else {
+				$tournament = null;
+			}
+
 			array_push( $result, $this->get_event_from_array(
 					$event,
 					$player,
@@ -60,7 +70,7 @@ class Event_Service
 		return $result;
 	}
 
-	private function get_event_from_array( array $event, $player, $tournament, $league ) {
+	private function get_event_from_array( array $event, Player $player, Tournament $tournament = null, League $league = null ) {
 		$result = null;
 		switch ( $event['type'] ) {
 			case 'PARTICIPATION_EVENT':
@@ -79,6 +89,14 @@ class Event_Service
 					$tournament,
 					$event['params']['points'],
 					$event['params']['winner'],
+					$event['date']
+				);
+				break;
+			case 'CREDIT_POINTS':
+				$result = new Credit_Points(
+					$player,
+					$event['params']['credits'],
+					$event['params']['message'],
 					$event['date']
 				);
 				break;
@@ -139,5 +157,15 @@ class Event_Service
 			$this->players->save( $player );
 		}
 		$this->leagues->save( $league );
+	}
+
+	public function credit_event( $player, $amount, $message ) {
+		$event = new Credit_Points( $player, $amount, $message, time() );
+		$event->apply();
+		$this->events->save( $event );
+	}
+
+	public function rewind( $event_id ) {
+		//$event = $this->get_event_from_array( $this->events->get_by_id( $event_id ) );
 	}
 }

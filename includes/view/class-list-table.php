@@ -168,96 +168,96 @@ abstract class List_Table
 		return $this->key;
 	}
 
-    private function get_column_headers( $with_id = true ) {
-        list( $columns, $hidden, $sortable, $grouped, $widths ) = $this->get_column_info();
+	private function get_column_headers( $with_id = true ) {
+		list( $columns, $hidden, $sortable, $grouped, $widths ) = $this->get_column_info();
 
-        $result = '';
-        foreach ( $columns as $column_key => $column_display_name ) {
-            $class = array( "column-$column_key" );
+		$result = '';
+		foreach ( $columns as $column_key => $column_display_name ) {
+			$class = array( "column-$column_key" );
 
-            $style = '';
-            if ( in_array( $column_key, $hidden ) ) {
-                $style = 'display:none;';
-            } else if ( isset( $widths[$column_key] ) ) {
-                $style = 'width:' . $widths[$column_key];
-            }
+			$style = '';
+			if ( in_array( $column_key, $hidden ) ) {
+				$style = 'display:none;';
+			} else if ( isset( $widths[$column_key] ) ) {
+				$style = 'width:' . $widths[$column_key];
+			}
 
-            if ( strlen( $style ) > 0 ) {
-                $style = ' style="' . $style . '"';
-            }
+			if ( strlen( $style ) > 0 ) {
+				$style = ' style="' . $style . '"';
+			}
 
-            $id = $with_id ? "id='$column_key'" : '';
+			$id = $with_id ? "id='$column_key'" : '';
 
-            if ( ! empty( $class ) ) {
-                $class = "class='" . join( ' ', $class ) . "'";
-            }
+			if ( ! empty( $class ) ) {
+				$class = "class='" . join( ' ', $class ) . "'";
+			}
 
-            $result .= sprintf( '<th scope="col" %1$s, %2$s, %3$s>%4$s</th>', $id, $class, $style, $column_display_name );
-        }
-        return $result;
-    }
+			$result .= sprintf( '<th scope="col" %1$s, %2$s, %3$s>%4$s</th>', $id, $class, $style, $column_display_name );
+		}
+		return $result;
+	}
 
-    protected function get_table_classes() {
-        return array( 'widefat', 'fixed' );
-    }
+	protected function get_table_classes() {
+		return array( 'widefat', 'fixed' );
+	}
 
-    private function get_tablenav( $which ) {
+	private function get_tablenav( $which ) {
 		$result = sprintf( '<div class="tablenav %s">', esc_attr( $which ) );
-        if ( method_exists( $this, 'get_' . $which . '_tablenav' ) ) {
-            $result .= call_user_func( array( $this, 'get_' . $which . '_tablenav' ) );
-        }
-        $result .= '</div>';
-        return $result;
-    }
+		if ( method_exists( $this, 'get_' . $which . '_tablenav' ) ) {
+			$result .= call_user_func( array( $this, 'get_' . $which . '_tablenav' ) );
+		}
+		$result .= '</div>';
+		return $result;
+	}
 
-    private function get_rows_or_placeholder() {
-        if ( $this->has_items() ) {
-            return $this->get_rows();
-        } else {
-            return sprintf( '<tr class="no-items"><td class="colspanchange" colspan="%u">%s</td></tr>',
-                $this->get_column_count(), $this->no_items() );
-        }
-    }
+	private function get_rows_or_placeholder() {
+		if ( $this->has_items() ) {
+			return $this->get_rows();
+		} else {
+			return sprintf( '<tr class="no-items"><td class="colspanchange" colspan="%u">%s</td></tr>',
+				$this->get_column_count(), $this->no_items() );
+		}
+	}
 
-    private function get_rows() {
-        $this->index = 0;
-        $result = '';
-        $this->sort();
-        if ( $this->has_grouping() ) {
-            $groups = array();
-            $current_group = array( $this->items[0] );
+	private function get_rows() {
+		$this->index = 0;
+		$result = '';
+		$this->sort();
+		if ( $this->has_grouping() ) {
+			$groups = array();
+			$current_group = array( $this->items[0] );
 
-            for ( $i = 1; $i < count( $this->items ); $i ++ ) {
-                $prev = $this->items[$i - 1];
-                $item = $this->items[$i];
-                if ( $this->is_same_group( $item, $prev ) ) {
-                    array_push( $current_group, $item );
-                } else {
-                    array_push( $groups, $current_group );
-                    $current_group = array( $item );
-                }
-            }
-            array_push( $groups, $current_group );
-            foreach ( $groups as $group ) {
-                $result .= $this->group_header( $group );
-                foreach ( $group as $item ) {
-                    $result .= $this->single_row( $item );
-                }
-            }
-        } else {
-            foreach ( $this->items as $key => $item ) {
-                $this->key = $key;
-                $result .= $this->single_row( $item );
-                $this->index ++;
-            }
-        }
-        $this->index = null;
-        $this->key = null;
-        return $result;
-    }
+			for ( $i = 1; $i < count( $this->items ); $i ++ ) {
+				$prev = $this->items[$i - 1];
+				$item = $this->items[$i];
+				if ( $this->is_same_group( $item, $prev ) ) {
+					array_push( $current_group, $item );
+				} else {
+					array_push( $groups, $current_group );
+					$current_group = array( $item );
+				}
+			}
+			array_push( $groups, $current_group );
+			foreach ( $groups as $group ) {
+				$result .= $this->group_header( $group );
+				foreach ( $group as $item ) {
+					$result .= $this->single_row( $item );
+				}
+			}
+		} else {
+			foreach ( $this->items as $key => $item ) {
+				$this->key = $key;
+				$result .= $this->single_row( $item );
+				$this->index ++;
+			}
+		}
+		$this->index = null;
+		$this->key = null;
+		return $result;
+	}
 
-    protected function row_actions( $edit_url, $delete_url ) {
-        return sprintf( '<div class="row-actions"><span class="edit"><a href="%1$s">%2$s</a></span> |
+	protected function row_actions( $edit_url, $delete_url ) {
+		return sprintf( '<div class="row-actions"><span class="edit"><a href="%1$s">%2$s</a></span> |
 		<span class="delete"><a href="%3$s">%4$s</a></span></div>',
 			$edit_url,
 			__( 'Edit' ),

@@ -10,8 +10,6 @@ $screen = Player_Screen::get_instance();
 $list_table = new Players_List_Table( $screen->get_players() );
 $list_table->prepare_items();
 
-wp_enqueue_script( 'tournament-admin' );
-wp_enqueue_style( 'tournament-admin' );
 ?>
 
 <div class="wrap nosubsub">

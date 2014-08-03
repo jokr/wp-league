@@ -19,7 +19,7 @@ class League_Points extends League_Event
 		$this->date = $date;
 	}
 
-	protected function _apply() {
+	public function apply() {
 		assert( ! isset( $this->id ) );
 		$this->league->add_league_points( $this->get_player()->get_id(), $this->points, $this->winner );
 	}

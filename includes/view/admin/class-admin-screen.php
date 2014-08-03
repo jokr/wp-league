@@ -54,6 +54,14 @@ abstract class Admin_Screen
 			true
 		);
 
+		wp_register_script(
+			'player-admin',
+			LEAGUE_PLUGIN_URL . 'js/player-admin.js',
+			array( 'jquery' ),
+			LEAGUE_PLUGIN_VERSION,
+			true
+		);
+
 		wp_register_style(
 			'league-admin-jquery-ui',
 			get_server_protocol() . 'code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css',

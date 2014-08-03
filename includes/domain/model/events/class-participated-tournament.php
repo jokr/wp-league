@@ -18,7 +18,7 @@ class Participated_Tournament extends League_Event
 		$this->rank = $rank;
 	}
 
-	protected function _apply() {
+	public function apply() {
 		assert( ! isset( $this->id ) );
 
 		$this->league->add_player( $this->player->get_id() );

@@ -16,6 +16,7 @@ class Leagues extends Repository
 	}
 
 	public function get_by_id( $id ) {
+		assert( isset( $id ) && is_numeric( $id ) );
 		return League::from_array( $id, parent::get_by_id( $id ) );
 	}
 

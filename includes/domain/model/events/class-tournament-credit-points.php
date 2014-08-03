@@ -7,7 +7,7 @@ class Tournament_Credit_Points extends Credit_Points
 	private $tournament;
 
 	public function __construct( Player $player, Tournament $tournament, $credits ) {
-		parent::__construct( $player, $credits, $tournament->get_date() );
+		parent::__construct( $player, $credits, 'Tournament Reward', $tournament->get_date() );
 		$this->tournament = $tournament;
 	}
 
@@ -18,7 +18,17 @@ class Tournament_Credit_Points extends Credit_Points
 		return $result;
 	}
 
+	function get_message() {
+		return sprintf( '%u credit points awarded.', $this->get_credits() );
+	}
+
 	public function get_type() {
 		return 'TOURNAMENT_CREDIT_POINTS';
+	}
+
+	public function get_params() {
+		return array(
+			'credits' => $this->get_credits()
+		);
 	}
 }

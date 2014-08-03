@@ -25,6 +25,20 @@ class Events_List_Table extends List_Table
 		);
 	}
 
+	protected function column_message( League_Event $event ) {
+		return $event->get_message() . sprintf( '<div class="row-actions"><span class="delete"><a href="%1$s">%2$s</a></span></div>',
+			admin_url( 'admin.php?' . http_build_query( array(
+					'page' => 'players',
+					'action' => 'rewind',
+					'id' => $event->get_player()->get_id(),
+					'event' => $event->get_id(),
+					'_wpnonce' => wp_create_nonce( 'rewind-event' )
+				) )
+			),
+			__( 'Rewind' )
+		);
+	}
+
 	protected function get_grouped_columns() {
 		return array( 'date' );
 	}

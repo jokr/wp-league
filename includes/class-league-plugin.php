@@ -52,8 +52,8 @@ class League_Plugin
 
 		$this->league_service = new League_Service( $this->leagues, $this->tournaments );
 
-		$this->player_service = new Player_Service( $this->players );
 		$this->event_service = new Event_Service( $this->events, $this->players, $this->leagues, $this->tournaments );
+		$this->player_service = new Player_Service( $this->players, $this->event_service );
 		$this->tournament_service = new Tournament_Service(
 			$this->leagues, $this->tournaments, $this->players, $this->matches, $this->event_service
 		);
